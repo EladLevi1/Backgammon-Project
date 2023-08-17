@@ -12,4 +12,4 @@ const gameChatSchema = new mongoose.Schema({
     }]
 });
 
-module.exports = mongoose.model('gameChatSchema', chatSchema);
+module.exports = mongoose.model('gameChatSchema', gameChatSchema);

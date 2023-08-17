@@ -14,7 +14,8 @@
 .play-random,
 .play-friends,
 .play-offline,
-.play-ai {
+.play-ai,
+.how-to-play {
     width: 100%;
     border: none;
     padding: 15px 30px;
@@ -47,9 +48,14 @@
     color: white;
 }
 
+.how-to-play {
+    background-color: beige;
+}
+
 .play-random:hover,
 .play-friends:hover,
 .play-offline:hover,
-.play-ai:hover {
+.play-ai:hover,
+.how-to-play:hover {
     transform: scale(1.05);
 }

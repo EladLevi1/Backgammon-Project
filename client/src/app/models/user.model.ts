@@ -1,9 +1,7 @@
 export default class User{
     constructor(
-        public id : string = "0",
+        public _id : string = "",
         public email : string = "",
         public password : string = "",
-        public nickname : string = "",
-        public image : string = ""
         ) {}
 }

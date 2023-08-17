@@ -45,9 +45,20 @@
                                     <div *ngIf="imageInput.errors?.['required']">Profile image is required.</div>
                                     <div *ngIf="imageInput.errors?.['file']">Image file is invalid.</div>
                                 </div>
-                            </div>                               -->
-                            <!-- <button type="submit" class="btn btn-outline-light btn-lg px-5" [disabled]="!registerForm.valid || !isImageSelected">Sign Up</button> -->
-                            <button type="submit" class="btn btn-outline-light btn-lg px-5" [disabled]="!registerForm.valid">Sign Up</button>
+                            </div> -->
+                            <div class="mb-4">
+                                <label class="form-label">Profile Image</label>
+                                <button type="button" class="btn btn-outline-primary" (click)="toggleIconGrid()">Choose Profile Picture</button>
+                                <div *ngIf="showIconGrid" class="image-icons mt-3">
+                                  <div *ngFor="let imagePath of imagePaths" class="image-icon" (click)="onImageSelected(imagePath)">
+                                    <img [src]="imagePath" alt="Profile Image" [class.selected]="imagePath === imagePreview" />
+                                  </div>
+                                </div>
+                                <img [src]="imagePreview" alt="Profile Image Preview" class="mt-3 w-100" style="border-radius: 10px;" *ngIf="imagePreview" />
+                                <button type="button" class="btn btn-outline-danger btn-sm mt-3" (click)="removeImage()" *ngIf="isImageSelected">Remove Image</button>
+                                <div class="text-danger" *ngIf="!isImageSelected">Profile image is required.</div>
+                            </div>
+                            <button type="submit" class="btn btn-outline-light btn-lg px-5" [disabled]="!registerForm.valid || !isImageSelected">Sign Up</button>
                         </form>
                     </div>
                     <div>
@@ -59,3 +70,43 @@
         </div>
     </div>
 </div>
+
+
+<!-- <div class="register-page">
+    <div class="card">
+        <h1>Sign Up</h1>
+        <p>Please fill out the form below to create an account!</p>
+        <form #registerForm="ngForm" (ngSubmit)="onSubmit(registerForm)">
+            <div class="input-group">
+                <label for="signupEmail">Email</label>
+                <input type="email" id="signupEmail" name="email" required pattern="^\S+@\S+\.\S+$" ngModel #email="ngModel" />
+                <span *ngIf="email.invalid && email.touched">
+                    <span *ngIf="email.errors?.['required']">Email is required.</span>
+                    <span *ngIf="email.errors?.['pattern']">Invalid email format.</span>
+                </span>
+            </div>
+
+            <div class="input-group">
+                <label for="signupPassword">Password</label>
+                <input type="password" id="signupPassword" name="password" required minlength="6" maxlength="20" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{6,}$" ngModel #password="ngModel" />
+                <span *ngIf="password.invalid && password.touched">
+                    <span *ngIf="password.errors?.['required']">Password is required.</span>
+                    <span *ngIf="password.errors?.['minlength']">Password must be at least 6 characters long.</span>
+                    <span *ngIf="password.errors?.['pattern']">Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character.</span>
+                </span>
+            </div>
+
+            <div class="input-group">
+                <label for="signupNickname">Nickname</label>
+                <input type="text" id="signupNickname" name="nickname" required minlength="5" maxlength="20" ngModel #nickname="ngModel" />
+                <span *ngIf="nickname.invalid && nickname.touched">
+                    <span *ngIf="nickname.errors?.['required']">Nickname is required.</span>
+                    <span *ngIf="nickname.errors?.['minlength']">Nickname must be at least 5 characters long.</span>
+                </span>
+            </div>
+
+            <button type="submit" [disabled]="!registerForm.valid">Sign Up</button>
+        </form>
+        <p>Already have an account? <a routerLink="/login">Login</a></p>
+    </div>
+</div> -->

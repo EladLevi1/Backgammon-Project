@@ -14,6 +14,7 @@ import { OnlineUsersComponent } from './components/online-users/online-users.com
 import { PlayComponent } from './components/play/play.component';
 import { FriendsComponent } from './components/friends/friends.component';
 import { AboutComponent } from './components/about/about.component';
+import { HowToPlayComponent } from './components/how-to-play/how-to-play.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { AboutComponent } from './components/about/about.component';
     PlayComponent,
     FriendsComponent,
     AboutComponent,
+    HowToPlayComponent,
   ],
   imports: [
     BrowserModule,

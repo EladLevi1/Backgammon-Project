@@ -14,17 +14,34 @@ const ioServer = socketIO(httpServer, {
     }
 });
 
-app.use(express.json()); // Adjust the limit as needed
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 const userRoute = require('./routes/userRoute');
+const profileRoute = require('./routes/profileRoute');
+const gameRoute = require('./routes/gameRoute');
+const gameChatRoute = require('./routes/gameChatRoute');
+const friendRequestRoute = require('./routes/friendRequestRoute');
+const notificationRoute = require('./routes/notificationRoute');
+const publicChatRoute = require('./routes/publicChatRoute');
+const privateChatRoute = require('./routes/privateChatRoute');
+
 app.use('/Backgammon/Users', userRoute);
+app.use('/Backgammon/Profiles', profileRoute);
+app.use('/Backgammon/Games', gameRoute);
+app.use('/Backgammon/GameChat', gameChatRoute);
+app.use('/Backgammon/FriendRequests', friendRequestRoute);
+app.use('/Backgammon/Notifications', notificationRoute);
+app.use('/Backgammon/PublicChat', publicChatRoute);
+app.use('/Backgammon/PrivateChat', privateChatRoute);
 
 ioServer.on('connection', (socket) => {
-    console.log('user connected');
+    console.log('User connected:', socket.id);
 
-    
+    socket.on('disconnect', () => {
+        console.log('User disconnected:', socket.id);
+    });
 });
 
 

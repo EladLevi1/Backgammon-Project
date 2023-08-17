@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
+import Profile from 'src/app/models/profile.model';
 import User from 'src/app/models/user.model';
-import { UserService } from 'src/app/services/user.service';
+import { ProfileService } from 'src/app/services/profile-service/profile.service';
+import { UserService } from 'src/app/services/user-service/user.service';
 
 @Component({
   selector: 'app-register',
@@ -12,12 +14,34 @@ import { UserService } from 'src/app/services/user.service';
 export class RegisterComponent {
   users : User[] = [];
 
-  user : User = new User();
+  imagePaths: string[] = [
+    '/assets/images/icons/icon1.png',
+    '/assets/images/icons/icon2.png',
+    '/assets/images/icons/icon3.png',
+    '/assets/images/icons/icon4.png',
+    '/assets/images/icons/icon5.png',
+    '/assets/images/icons/icon6.png',
+    '/assets/images/icons/icon7.png',
+    '/assets/images/icons/icon8.png',
+    '/assets/images/icons/icon9.png',
+    '/assets/images/icons/icon10.png',
+    '/assets/images/icons/icon11.png',
+    '/assets/images/icons/icon12.png',
+    '/assets/images/icons/icon13.png',
+    '/assets/images/icons/icon14.png',
+    '/assets/images/icons/icon15.png',
+    '/assets/images/icons/icon16.png',
+    '/assets/images/icons/icon17.png',
+    '/assets/images/icons/icon18.png',
+    '/assets/images/icons/icon19.png',
+    '/assets/images/icons/icon20.png',
+  ];
 
-  imagePreview: string | ArrayBuffer | null = null;  // This will hold the URL for the image preview
-  isImageSelected: boolean = false;  // Flag to check if an image has been selected
+  imagePreview: string = "";
+  isImageSelected: boolean = false;
+  showIconGrid: boolean = false;
   
-  constructor(private userService: UserService, private router: Router) {}
+  constructor(private userService: UserService, private profileService: ProfileService ,private router: Router) {}
   
   ngOnInit() {
     this.userService.getUsers().subscribe(
@@ -30,74 +54,22 @@ export class RegisterComponent {
     );
   }
 
-  
-  // onImageSelected(event: any, imageInput : NgModel): void {
-  //   const file = event.target.files[0];
+  toggleIconGrid() {
+    this.showIconGrid = !this.showIconGrid;
+  }
 
-  //   if (file && file.type.startsWith('image')) {  // Ensure the selected file is an image
-  //       const reader = new FileReader();
-  //       reader.onload = (e) => {
-  //         if (e.target && typeof e.target.result === 'string') {
-  //             this.imagePreview = e.target.result;  // Set the preview URL
-  //         }
-  //     };
-  //       reader.readAsDataURL(file);
-        
-  //       this.isImageSelected = true;  // Set the flag to true as an image has been selected
-  //   } else {
-  //       this.imagePreview = null;  // Reset the preview URL
-  //       this.isImageSelected = false;  // Reset the flag as no image is selected
-
-  //       imageInput.control.setErrors({ 'file': true });
-  //   }
-  // }
-
-  // onImageSelected(event: any, imageInput: NgModel): void {
-  //   const file = event.target.files[0];
-    
-  //   if (file && file.type.startsWith('image')) {  // Ensure the selected file is an image
-  //       const reader = new FileReader();
-  //       reader.onload = (e) => {
-  //         const image = new Image();
-  //         image.src = e.target?.result as string;
-  //         image.onload = () => {
-  //           const canvas = document.createElement('canvas');
-  //           const maxSize = 500;  // This can be your desired size
-  //           let width = image.width;
-  //           let height = image.height;
+  onImageSelected(imagePath: string) {
+    this.imagePreview = imagePath;
+    this.isImageSelected = true;
+    this.showIconGrid = false;
+  }
   
-  //           if (width > height) {
-  //               if (width > maxSize) {
-  //                   height *= maxSize / width;
-  //                   width = maxSize;
-  //               }
-  //           } else {
-  //               if (height > maxSize) {
-  //                   width *= maxSize / height;
-  //                   height = maxSize;
-  //               }
-  //           }
-            
-  //           canvas.width = width;
-  //           canvas.height = height;
+  removeImage() {
+    this.imagePreview = "";
+    this.isImageSelected = false;
+    this.showIconGrid = false;
+  }
   
-  //           const ctx = canvas.getContext('2d');
-  //           ctx?.drawImage(image, 0, 0, width, height);
-  
-  //           const dataUrl = canvas.toDataURL('image/jpeg', 0.8);  // This uses JPEG with 80% quality. You can adjust as needed
-  //           this.imagePreview = dataUrl;
-  
-  //           this.isImageSelected = true;  // Set the flag to true as an image has been selected
-  //         };
-  //       };
-  //       reader.readAsDataURL(file);
-  //   } else {
-  //       this.imagePreview = null;  // Reset the preview URL
-  //       this.isImageSelected = false;  // Reset the flag as no image is selected
-  
-  //       imageInput.control.setErrors({ 'file': true });
-  //   }
-  // }  
 
   // onImageSelected(event: any, imageInput: NgModel): void {
   //   const file = event.target.files[0];
@@ -157,35 +129,45 @@ export class RegisterComponent {
   //   }
   // }
 
-  async onSubmit(registrationForm : NgForm) {
+  async onSubmit(registrationForm: NgForm) {
     if (registrationForm.valid) {
-
       const formData = registrationForm.value;
-
-      const tempUser = new User(
+  
+      const tempUser: User = new User(
         "1",
         formData.email,
-        formData.password,
-        formData.nickname,
-        // this.imagePreview as string
-        "https://cdn-icons-png.flaticon.com/512/3135/3135768.png"
-        );
+        formData.password
+      )
   
-      this.userService.postUser(tempUser).subscribe((u) => {
-        this.user = u as User;
-  
-        this.userService.loginUser(formData.email, formData.password).subscribe(
-          (data: any) => {
-            this.userService.storeToken(data.token);
-            this.router.navigate(['']);
+      this.userService.postUser(tempUser).subscribe((createdUser) => {
+        const tempProfile = new Profile(
+          "1",
+          formData.nickname,
+          this.imagePreview,
+          createdUser as User,
+          []
+        )
+
+        this.profileService.postProfile(tempProfile).subscribe(
+          () => {
+            this.userService.loginUser(formData.email, formData.password).subscribe(
+              (data: any) => {
+                this.userService.storeToken(data.token);
+                this.router.navigate(['']);
+              },
+              (error) => {
+                alert(error.error);
+              }
+            );
           },
           (error) => {
-            alert(error.error);
+            alert('Error creating profile: ' + error);
           }
         );
       });
     } else {
-      alert('Invalid registration form!')
+      alert('Invalid registration form!');
     }
   }
+  
 }

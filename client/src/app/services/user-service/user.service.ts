@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import User from '../models/user.model';
+import User from 'src/app/models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -15,20 +15,20 @@ export class UserService {
     return this.httpClient.get(this.url);
   }
 
-  getUserById(id: string) {
-    return this.httpClient.get(this.url + id);
+  getUserById(_id: string) {
+    return this.httpClient.get(this.url + _id);
   }
 
   postUser(user: User) {
     return this.httpClient.post(this.url, user);
   }
 
-  deleteUser(id: String) {
-    return this.httpClient.delete(this.url + id);
+  deleteUser(_id: String) {
+    return this.httpClient.delete(this.url + _id);
   }
 
   putUser(user: User) {
-    return this.httpClient.put(this.url + user.id, user);
+    return this.httpClient.put(this.url + user._id, user);
   }
 
   loginUser(email: string, password: string) {

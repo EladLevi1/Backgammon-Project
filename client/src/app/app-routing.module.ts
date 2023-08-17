@@ -7,6 +7,7 @@ import { PlayComponent } from './components/play/play.component';
 import { FriendsComponent } from './components/friends/friends.component';
 import { AboutComponent } from './components/about/about.component';
 import { AuthGuard } from './guards/authguard.guard';
+import { HowToPlayComponent } from './components/how-to-play/how-to-play.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, canActivate: [AuthGuard] },
@@ -14,7 +15,8 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'play', component: PlayComponent, canActivate: [AuthGuard] },
   { path: 'friends', component: FriendsComponent, canActivate: [AuthGuard] },
-  { path: 'about', component: AboutComponent, canActivate: [AuthGuard] }
+  { path: 'about', component: AboutComponent, canActivate: [AuthGuard] },
+  { path: 'howtoplay', component: HowToPlayComponent, canActivate: [AuthGuard] }, 
 ];
 
 @NgModule({

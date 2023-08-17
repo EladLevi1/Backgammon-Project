@@ -1,6 +1,6 @@
 import { Component, DoCheck } from '@angular/core';
-import User from './models/user.model';
-import { UserService } from './services/user.service';
+import User from './models/userMonolithic.model';
+import { UserService } from './services/user-service/user.service';
 
 @Component({
   selector: 'app-root',
@@ -14,7 +14,9 @@ export class AppComponent implements DoCheck {
   
   ismenurequired: boolean = false;
   
-  constructor(private userService: UserService){}
+  constructor(private userService: UserService){
+    console.log(this.user.image);  
+  }
   
   ngDoCheck(): void {
     if (this.userService.getToken() != null) {
