@@ -1,0 +1,29 @@
+<body>
+    <div class="navbar" *ngIf="ismenurequired">
+        <div class="home">
+            <a class="nav-link" routerLink="/"><img src="/assets/images/home.jpg" alt="home"/></a>
+        </div>
+        <div class="backgammon-image">
+            <img src="/assets/images/backgammon.jpg" alt="backgammon"/>
+        </div>
+        <div class="profile">
+            <div class="profile-menu">
+                <img [src]="user.image" alt="profile" (click)="toggleProfileMenu()">
+                <div class="profile-dropdown" *ngIf="showProfileMenu">
+                    <a routerLink="edit-settings">Edit Settings</a>
+                    <a routerLink="logout">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="content-wrap">
+        <div class="my-container">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+    
+    <div class="footer" *ngIf="ismenurequired">
+        <p class="footer-text">© 2023 Elad Levi - All rights reserved.</p>
+    </div>
+</body>

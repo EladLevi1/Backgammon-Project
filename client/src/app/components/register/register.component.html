@@ -1,0 +1,61 @@
+<div class="container h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+            <div class="card bg-dark text-white" style="border-radius: 1rem;">
+                <div class="card-body p-5 text-center">
+                    <div class="mb-md-3 mt-md-4">
+                        <h1 class="fw-bold mb-2 fs-1 text-uppercase">Sign Up</h1>
+                        <p class="text-white-50 mb-5">Please fill out the form below to create an account!</p>
+                        <form #registerForm="ngForm" (ngSubmit)="onSubmit(registerForm)">
+                            <div class="form-outline form-white mb-4">
+                                <input type="email" id="signupEmail" class="form-control form-control-lg text-center" name="email" required pattern="^\S+@\S+\.\S+$" ngModel #email="ngModel" />
+                                <label class="form-label" for="signupEmail">Email</label>
+                                <div *ngIf="email.invalid && email.touched" class="text-danger">
+                                    <div *ngIf="email.errors?.['required']">Email is required.</div>
+                                    <div *ngIf="email.errors?.['pattern']">Invalid email format.</div>
+                                    <div *ngIf="email.errors?.['duplicate']">Email already exists.</div>
+                                </div>
+                            </div>
+                            <div class="form-outline form-white mb-4">
+                                <input type="password" id="signupPassword" class="form-control form-control-lg text-center" name="password" required minlength="6" maxlength="20" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{6,}$" ngModel #password="ngModel" />
+                                <label class="form-label" for="signupPassword">Password</label>
+                                <div *ngIf="password.invalid && password.touched" class="text-danger">
+                                    <div *ngIf="password.errors?.['required']">Password is required.</div>
+                                    <div *ngIf="password.errors?.['minlength']">Password must be at least 6 characters long.</div>
+                                    <div *ngIf="password.errors?.['maxlength']">Password cannot exceed 20 characters.</div>
+                                    <div *ngIf="password.errors?.['pattern']">Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character.</div>
+                                </div>
+                            </div>
+                            <div class="form-outline form-white mb-4">
+                                <input type="text" id="signupNickname" class="form-control form-control-lg text-center" name="nickname" required minlength="5" maxlength="20" ngModel #nickname="ngModel" />
+                                <label class="form-label" for="signupNickname">Nickname</label>
+                                <div *ngIf="nickname.invalid && nickname.touched" class="text-danger">
+                                    <div *ngIf="nickname.errors?.['required']">Nickname is required.</div>
+                                    <div *ngIf="nickname.errors?.['minlength']">Nickname must be at least 5 characters long.</div>
+                                    <div *ngIf="nickname.errors?.['maxlength']">Nickname cannot exceed 20 characters.</div>
+                                    <div *ngIf="nickname.errors?.['duplicate']">Nickname already exists.</div>
+                                </div>
+                            </div>
+                            <!-- <div class="mb-4">
+                                <label class="form-label" for="signupImage">Profile Image</label>
+                                <input type="file" id="signupImage" class="form-control form-control-lg text-center" (change)="onImageSelected($event, imageInput)" accept="image/*" #imageInput="ngModel" ngModel name="image" required>
+                                <img [src]="imagePreview" alt="Profile Image Preview" class="mt-3 w-100" style="border-radius: 10px;" *ngIf="imagePreview" />
+                                <button type="button" class="btn btn-outline-danger btn-sm mt-3" (click)="removeImage()" *ngIf="isImageSelected">Remove Image</button>
+                                <div *ngIf="!imageInput.valid && (imageInput.dirty || imageInput.touched)" class="text-danger">
+                                    <div *ngIf="imageInput.errors?.['required']">Profile image is required.</div>
+                                    <div *ngIf="imageInput.errors?.['file']">Image file is invalid.</div>
+                                </div>
+                            </div>                               -->
+                            <!-- <button type="submit" class="btn btn-outline-light btn-lg px-5" [disabled]="!registerForm.valid || !isImageSelected">Sign Up</button> -->
+                            <button type="submit" class="btn btn-outline-light btn-lg px-5" [disabled]="!registerForm.valid">Sign Up</button>
+                        </form>
+                    </div>
+                    <div>
+                        <p class="mb-0 mt-4">Already have an account? <a routerLink="/login" class="text-white-50 fw-bold">Login</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,55 @@
+.play-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.options {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 50%;
+}
+
+.play-random,
+.play-friends,
+.play-offline,
+.play-ai {
+    width: 100%;
+    border: none;
+    padding: 15px 30px;
+    margin: 10px;
+    font-size: 50px;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s, background-color 0.3s;
+    box-shadow: 4px 4px black, -4px -4px black;
+}
+
+.play-random {
+    background-color: #ff5733;
+    color: white;
+}
+
+.play-friends {
+    background-color: #ffcc29;
+    color: #333;
+}
+
+.play-offline {
+    background-color: #29a329;
+    color: white;
+}
+
+.play-ai {
+    background-color: #665cff;
+    color: white;
+}
+
+.play-random:hover,
+.play-friends:hover,
+.play-offline:hover,
+.play-ai:hover {
+    transform: scale(1.05);
+}
