@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
-import jwtDecode from 'jwt-decode';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
 import { UserService } from '../services/user-service/user.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthGuard implements CanActivate {
+export class LogRegGuard implements CanActivate {
 
   constructor(private userService: UserService, private router: Router) {}
 
@@ -16,10 +15,10 @@ export class AuthGuard implements CanActivate {
   ): boolean {
     const token = this.userService.getToken();
     if (token) {
-      return true;
-    } else {
-      this.router.navigate(['login']);
+      this.router.navigate(['']);
       return false;
+    } else {
+      return true;
     }
   }
 }

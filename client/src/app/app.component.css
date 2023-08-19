@@ -7,7 +7,6 @@
 
 body {
     background-image: url('/assets/images/background.jpg');
-    /* background: radial-gradient(circle, rgba(126,94,58,1) 0%, rgba(55,47,26,1) 100%); */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -17,12 +16,11 @@ body {
     min-height: 100vh;
 }
 
-/* Navbar Styles */
 .navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #333;
+    background-color: #212529;
     padding: 10px 20px;
     color: white;
 }
@@ -71,9 +69,22 @@ body {
     margin-bottom: 10px;
 }
 
+.global-chat {
+    padding: 20px;
+    position: fixed; /* This ensures the chat box floats above other elements */
+    bottom: 2%;    /* Position the chat box 10px up from the bottom of the viewport */
+    left: 1%;     /* Position the chat box 10px from the right of the viewport */
+    z-index: 1000;   /* Ensure the chat box is on top of other elements */
+}
+
+.global-chat img {
+    cursor: pointer;
+    width: 80px;
+}
+
 .footer {
     flex-shrink: 0;
-    background-color: #333;
+    background-color: #212529;
     color: white;
     text-align: center;
     padding: 10px;

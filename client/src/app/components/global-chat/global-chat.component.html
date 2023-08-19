@@ -1,0 +1,21 @@
+<div class="global-chat">
+  <button class="close-chat-button" (click)="closeTheChat()">X</button>
+  <div class="chat-messages" #chatMessagesDiv>
+    <div *ngFor="let message of messages" class="message">
+      <span class="timestamp">{{ message.timestamp | date:'medium' }}</span>
+      <br />
+      <strong>{{ message.sender.nickname || "Unknown" }}</strong
+      >: {{ message.content }}
+    </div>
+  </div>
+  <form class="chat-input" (submit)="sendMessage()">
+    <input
+      class="input-field"
+      [(ngModel)]="newMessage"
+      [ngModelOptions]="{ standalone: true }"
+      placeholder="Type your message..."
+      maxlength="100"
+    />
+    <button class="send-button" type="submit">Send</button>
+  </form>
+</div>

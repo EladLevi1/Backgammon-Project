@@ -13,6 +13,8 @@
 
 .play-button,
 .friends-button,
+.online-button,
+.leaderboard-button,
 .about-button {
     width: 100%;
     border: none;
@@ -36,13 +38,25 @@
     color: #333;
 }
 
-.about-button {
+.online-button {
     background-color: #29a329;
     color: white;
 }
 
+.leaderboard-button {
+    background-color: #665cff;
+    color: white;
+} 
+
+.about-button {
+    background-color: beige;
+    color: #333;
+}
+
 .play-button:hover,
 .friends-button:hover,
+.online-button:hover,
+.leaderboard-button:hover,
 .about-button:hover {
     transform: scale(1.05);
 }

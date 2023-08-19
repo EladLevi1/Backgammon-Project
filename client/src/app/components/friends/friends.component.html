@@ -1,22 +1,54 @@
-<!-- <div class="friends-list">
-    <h2>Your Friends</h2>
-    <ul>
-      <li *ngFor="let friend of friends">
-        {{ friend.name }}
-        <span *ngIf="friend.online">Online</span>
-        <span *ngIf="!friend.online">Offline</span>
-      </li>
+<div class="friends-page">
+    <h1>Friends List</h1>
+
+    <!-- Section to add friends by nickname -->
+    <div class="add-friend-section">
+        <input [(ngModel)]="nicknameToAdd" placeholder="Enter Nickname to Add">
+        <button (click)="addFriendByNickname()">Add Friend</button>
+        <div *ngIf="error">{{ error }}</div>
+    </div>
+
+    <!-- Section for displaying sent friend requests -->
+    <h2>Pending Requests</h2>
+    <div *ngIf="sentRequests.length == 0">You haven't sent any friend requests yet.</div>
+    <ul *ngFor="let request of sentRequests">
+        <li>{{ request.recipient.nickname }} (Pending)</li>
     </ul>
-  </div>
-  
-  <div class="friend-requests">
-    <h2>Incoming Friend Requests</h2>
-    <ul>
-      <li *ngFor="let request of incomingRequests">
-        {{ request.from }}
-        <button (click)="acceptFriendRequest(request.id)">Accept</button>
-        <button (click)="rejectFriendRequest(request.id)">Reject</button>
-      </li>
+
+    <!-- Section for displaying received friend requests -->
+    <h2>Received Requests</h2>
+    <div *ngIf="receivedRequests.length == 0">No incoming friend requests.</div>
+    <ul *ngFor="let request of receivedRequests">
+        <li>{{ request.sender.nickname }} 
+            <button (click)="acceptRequest(request._id)">Accept</button> 
+            <button (click)="rejectRequest(request._id)">Reject</button>
+        </li>
     </ul>
-  </div>
-   -->
+
+    <!-- Displaying the friend list -->
+    <div *ngIf="friends.length == 0">
+        You have no friends 😔
+    </div>
+
+    <table *ngIf="friends.length > 0">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Nickname</th>
+                <th>Score</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let friend of friends" class="friend-profile">
+                <td><img [src]="friend.image" alt="{{ friend.nickname }}" width="50" height="50"></td>
+                <td>{{ friend.nickname }}</td>
+                <td>score</td> <!-- Assuming the Profile model has a 'score' property -->
+                <td>
+                    <!-- You might have logic here to unfriend or perform other actions -->
+                    <button>Unfriend</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

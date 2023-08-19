@@ -19,7 +19,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     try {
-        const profile = await Profile.findOne({ _id: req.params.id }).populate('user', 'email');
+        const profile = await Profile.findById(req.params.id).populate('user', 'email');
 
         if (profile) {
             res.status(200).send(profile);
@@ -27,6 +27,49 @@ router.get('/:id', async (req, res) => {
             res.status(404).send("Profile not found");
         }
 
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+});
+
+router.get('/user/:userId', async (req, res) => {
+    try {
+        const profile = await Profile.findOne({ user: req.params.userId }).populate('user', 'email');
+
+        if (profile) {
+            res.status(200).send(profile);
+        } else {
+            res.status(404).send("Profile not found");
+        }
+
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+});
+
+router.get('/:nickname', async (req, res) => {
+    try {
+        const profile = await Profile.findOne({ nickname: req.params.nickname });
+        if (!profile) {
+            return res.status(404).send("Profile not found");
+        }
+        res.status(200).send(profile);
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+});
+
+router.get('/:id/friends', async (req, res) => {
+    try {
+        const profile = await Profile.findById(req.params.id).populate('friends');
+        
+        if (!profile) {
+            return res.status(404).send("Profile not found");
+        }
+
+        const friends = profile.friends;
+
+        res.status(200).send(friends);
     } catch (err) {
         res.status(500).send(err.message);
     }
@@ -50,7 +93,7 @@ router.post('/', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
     try {
-        const profile = await Profile.findOne({ _id: req.params.id });
+        const profile = await Profile.findById(req.params.id);
 
         if (!profile) {
             return res.status(404).send("Profile not found");

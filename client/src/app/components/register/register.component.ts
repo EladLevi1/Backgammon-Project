@@ -46,7 +46,7 @@ export class RegisterComponent {
   ngOnInit() {
     this.userService.getUsers().subscribe(
       (users) => {
-        this.users = users as User[];
+        this.users = users;
       },
       (error) => {
         console.log(error.error);
@@ -130,6 +130,7 @@ export class RegisterComponent {
   // }
 
   async onSubmit(registrationForm: NgForm) {
+    console.log(this.users)
     if (registrationForm.valid) {
       const formData = registrationForm.value;
   
@@ -144,7 +145,7 @@ export class RegisterComponent {
           "1",
           formData.nickname,
           this.imagePreview,
-          createdUser as User,
+          createdUser,
           []
         )
 
@@ -153,17 +154,21 @@ export class RegisterComponent {
             this.userService.loginUser(formData.email, formData.password).subscribe(
               (data: any) => {
                 this.userService.storeToken(data.token);
-                this.router.navigate(['']);
+                // this.router.navigate(['']);
+                window.location.reload();
               },
               (error) => {
-                alert(error.error);
+                console.log(error.error);
               }
             );
           },
           (error) => {
-            alert('Error creating profile: ' + error);
+            console.log(error.error);
           }
         );
+      },
+      (error) => {
+        console.log(error.error);
       });
     } else {
       alert('Invalid registration form!');

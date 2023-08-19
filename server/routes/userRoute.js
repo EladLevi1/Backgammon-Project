@@ -4,12 +4,13 @@ const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const router = express.Router();
+require('dotenv').config();
 
 router.get('/', async (req, res) => {
     try {
         const users = await User.find();
 
-        if (tasks.length > 0){
+        if (users.length > 0){
             res.status(200).send(users);
         } else {
             res.status(404).send("No users found");
@@ -68,7 +69,9 @@ router.post('/login', async (req, res) => {
             return res.status(404).send("Incorrect email or password");
         }
 
-        const secret = crypto.randomBytes(64).toString('hex');
+        // const secret = crypto.randomBytes(64).toString('hex');
+
+        const secret = process.env.JWT_SECRET;
 
         const token = jwt.sign({
             _id: user._id
@@ -112,8 +115,9 @@ router.put('/:id', async (req, res) => {
         }
 
         user.email = req.body.email;
-        user.password = req.body.password;
-
+        const hashedPassword = await bcryptjs.hash(req.body.password, 10);
+        user.password = hashedPassword;
+        
         await user.save();
         res.status(200).send(user);
 

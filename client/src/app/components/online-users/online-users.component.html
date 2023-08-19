@@ -1,1 +1,29 @@
-<p>online-users works!</p>
+<div class="online-users-page">
+    <h1>Online Players</h1>
+
+    <div *ngIf="onlineProfiles.length == 0">
+        No players online 😔
+    </div>
+
+    <table *ngIf="onlineProfiles.length > 0">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Nickname</th>
+                <th>Score</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let profile of onlineProfiles" class="online-user">
+                <td><img [src]="profile.image" alt="{{ profile.nickname }}" width="50" height="50"></td>
+                <td>{{ profile.nickname }}</td>
+                <td>score</td>
+                <td>
+                    <!-- <button *ngIf="!user.isFriend">Add Friend</button> -->
+                    <button>Add Friend</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

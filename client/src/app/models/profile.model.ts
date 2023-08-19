@@ -5,7 +5,7 @@ export default class Profile{
         public _id : string = "",
         public nickname : string = "",
         public image : string = "",
-        public user : User,
-        public friends : Profile[]
+        public user : User = new User(),
+        public friends : Profile[] =[]
         ) {}
 }

@@ -8,11 +8,10 @@
         </div>
         <div class="profile">
             <div class="profile-menu">
-                <img [src]="user.image" alt="profile" (click)="toggleProfileMenu()">
-                <!-- <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="profile" (click)="toggleProfileMenu()"> -->
+                <img [src]="profile.image" alt="profile" (click)="toggleProfileMenu()">
                 <div class="profile-dropdown" *ngIf="showProfileMenu">
                     <a routerLink="edit-settings">Edit Settings</a>
-                    <a routerLink="logout">Logout</a>
+                    <a><button (click)="logout()">Logout</button></a>
                 </div>
             </div>
         </div>
@@ -22,6 +21,14 @@
         <div class="my-container">
             <router-outlet></router-outlet>
         </div>
+    </div> 
+
+    <div class="global-chat" *ngIf="ismenurequired">
+        <a (click)="globalChat = !globalChat">
+            <img src="/assets/images/globalchat.jpg"
+                alt="globalchat"/>
+        </a>
+        <app-global-chat *ngIf="globalChat" [user]="user" [profile]="profile" (closeChat)="handleCloseChat()"></app-global-chat>
     </div>
     
     <div class="footer" *ngIf="ismenurequired">

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const publicChatSchema = new mongoose.Schema({
+const globalChatSchema = new mongoose.Schema({
     messages: [{
         sender: { type: mongoose.Schema.Types.ObjectId, ref: 'Profile' },
         content: String,
@@ -8,4 +8,4 @@ const publicChatSchema = new mongoose.Schema({
     }]
 });
 
-module.exports = mongoose.model('PublicChat', publicChatSchema);
+module.exports = mongoose.model('GlobalChat', globalChatSchema);

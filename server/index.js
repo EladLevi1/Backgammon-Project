@@ -3,8 +3,9 @@ const express = require('express');
 const cors = require('cors');
 const socketIO = require('socket.io');
 const mongoose = require('mongoose');
+require('dotenv').config();
 
-const DBurl = 'mongodb://127.0.0.1:27017/Backgammon';
+const DBurl = process.env.DATABASE_URL;
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -24,7 +25,7 @@ const gameRoute = require('./routes/gameRoute');
 const gameChatRoute = require('./routes/gameChatRoute');
 const friendRequestRoute = require('./routes/friendRequestRoute');
 const notificationRoute = require('./routes/notificationRoute');
-const publicChatRoute = require('./routes/publicChatRoute');
+const globalChatRoute = require('./routes/globalChatRoute');
 const privateChatRoute = require('./routes/privateChatRoute');
 
 app.use('/Backgammon/Users', userRoute);
@@ -33,14 +34,29 @@ app.use('/Backgammon/Games', gameRoute);
 app.use('/Backgammon/GameChat', gameChatRoute);
 app.use('/Backgammon/FriendRequests', friendRequestRoute);
 app.use('/Backgammon/Notifications', notificationRoute);
-app.use('/Backgammon/PublicChat', publicChatRoute);
+app.use('/Backgammon/GlobalChat', globalChatRoute);
 app.use('/Backgammon/PrivateChat', privateChatRoute);
 
+const activeProfiles = new Set();
+
 ioServer.on('connection', (socket) => {
-    console.log('User connected:', socket.id);
+    socket.on('profileConnected', (profileId) => {
+        activeProfiles.add(profileId);
+        socket.profileId = profileId;
+        socket.broadcast.emit('profileOnline', profileId);
+    });
+
+    socket.on('getOnlineProfiles', () => {
+        socket.emit('onlineProfilesList', Array.from(activeProfiles));
+    });
+
+    socket.on('sendGlobalMessage', (message) => {
+        ioServer.emit('receiveGlobalMessage', message);
+    });
 
     socket.on('disconnect', () => {
-        console.log('User disconnected:', socket.id);
+        activeProfiles.delete(socket.userId);
+        socket.broadcast.emit('profileOffline', socket.profileId);
     });
 });
 
@@ -48,7 +64,7 @@ ioServer.on('connection', (socket) => {
 mongoose.connect(DBurl).then(() => {
     console.log("Database is connected!");
 
-    const server = httpServer.listen(8080, () => {
+    const server = httpServer.listen(process.env.PORT, () => {
         const port = server.address().port;
         console.log('server listening on port: ', port);
     });
