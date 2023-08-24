@@ -27,6 +27,7 @@ const friendRequestRoute = require('./routes/friendRequestRoute');
 const notificationRoute = require('./routes/notificationRoute');
 const globalChatRoute = require('./routes/globalChatRoute');
 const privateChatRoute = require('./routes/privateChatRoute');
+const gameInvitationRoute = require('./routes/gameInvitationRoute');
 
 app.use('/Backgammon/Users', userRoute);
 app.use('/Backgammon/Profiles', profileRoute);
@@ -36,6 +37,7 @@ app.use('/Backgammon/FriendRequests', friendRequestRoute);
 app.use('/Backgammon/Notifications', notificationRoute);
 app.use('/Backgammon/GlobalChat', globalChatRoute);
 app.use('/Backgammon/PrivateChat', privateChatRoute);
+app.use('/Backgammon/GameInvitation', gameInvitationRoute);
 
 const activeProfiles = new Set();
 
@@ -43,6 +45,7 @@ ioServer.on('connection', (socket) => {
     socket.on('profileConnected', (profileId) => {
         activeProfiles.add(profileId);
         socket.profileId = profileId;
+        socket.join(profileId);
         socket.broadcast.emit('profileOnline', profileId);
     });
 
@@ -54,12 +57,56 @@ ioServer.on('connection', (socket) => {
         ioServer.emit('receiveGlobalMessage', message);
     });
 
+    socket.on('sendFriendRequest', (data) => {
+        ioServer.to(data.recipient).emit('receiveFriendRequest', data);
+    });
+    
+    socket.on('acceptFriendRequest', (data) => {
+        ioServer.to(data.sender).emit('friendRequestAccepted', data);
+    });
+
+    socket.on('rejectFriendRequest', (data) => {
+        ioServer.to(data.sender).emit('friendRequestRejected', data);
+    });
+
+    socket.on('friendRemove', ({profileId, friendId}) => {
+        ioServer.to(profileId).emit('friendRemoved', friendId);
+    });
+
+    socket.on('joinChat', ({chatId, profileId}) => {
+        console.log(`profile ${profileId} joined chat ${chatId}`);
+        socket.join(chatId);
+        ioServer.to(chatId).emit('profileJoinedChat', profileId);
+    });
+
+    socket.on('leaveChat', ({chatId, profileId}) =>{
+        console.log(`profile ${profileId} left chat ${chatId}`);
+        socket.leave(chatId);
+        ioServer.to(chatId).emit('profileLeftChat', profileId);
+    });
+
+    socket.on('sendPrivateMessage', ({chatId, message}) =>{
+        ioServer.to(chatId).emit('receivePrivateMessage', message);
+    });
+
+    socket.on('sendGameInvitation', (invitation) => {
+        ioServer.to(invitation.recipient).emit('recievedGameInvitation', invitation);
+    });
+
+    socket.on('acceptGameInvitation', (invitation) => {
+        ioServer.to(invitation.sender).emit('gameInvitationAccepted', invitation);
+    });
+
+    socket.on('rejectGameInvitation', (invitation) => {
+        ioServer.to(invitation.sender).emit('gameInvitationRejected', invitation);
+    });
+
     socket.on('disconnect', () => {
-        activeProfiles.delete(socket.userId);
+        socket.leave(socket.profileId);
+        activeProfiles.delete(socket.profileId);
         socket.broadcast.emit('profileOffline', socket.profileId);
     });
 });
-
 
 mongoose.connect(DBurl).then(() => {
     console.log("Database is connected!");

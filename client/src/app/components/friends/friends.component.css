@@ -78,3 +78,32 @@ button:hover {
     background-color: #FFB300;
     transform: scale(1.05);
 }
+
+.tab-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.tab-buttons button {
+    flex: 1;
+    font-size: 16px;
+}
+
+.tab-buttons .active {
+    background-color: #FFB300;
+    color: wheat;
+}
+
+.friends {
+    width: 100%;
+}
+
+.unfriend-btn {
+    background-color: red;
+}
+
+.unfriend-btn:hover{
+    background-color: rgb(255, 75, 75) ;   
+}

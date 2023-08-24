@@ -5,6 +5,8 @@ import { ConnectionSocketIoService } from './services/connectionsocket-service/c
 import User from './models/user.model';
 import { ProfileService } from './services/profile-service/profile.service';
 import Profile from './models/profile.model';
+import { Router } from '@angular/router';
+import { GameInvitationSocketIoService } from './services/gameinvitationsocket-service/game-invitation-socket-io.service';
 
 @Component({
   selector: 'app-root',
@@ -17,9 +19,11 @@ export class AppComponent {
   showProfileMenu = false;
   ismenurequired: boolean = false;
   globalChat : boolean = false;
+  notifications: boolean = false;
+  isChatRoute: boolean = false;
   
   constructor(private userService: UserService, private connectionSocketIO: ConnectionSocketIoService,
-    private profileService: ProfileService){}
+    private profileService: ProfileService, private router: Router){}
 
   ngOnInit() {
     const token = this.userService.getToken();
@@ -43,12 +47,15 @@ export class AppComponent {
   }
 
   ngDoCheck() {
-    if (this.userService.getToken() != null) {
-      this.ismenurequired = true;
+    const currentURL = this.router.url;
+    const isPrivateChatPath = currentURL.startsWith('/privatechat/');
+
+    if (this.userService.getToken() != null && !isPrivateChatPath) {
+        this.ismenurequired = true;
     } else {
-      this.ismenurequired = false;
+        this.ismenurequired = false;
     }
-  }
+}
   
   toggleProfileMenu() {
     this.showProfileMenu = !this.showProfileMenu;

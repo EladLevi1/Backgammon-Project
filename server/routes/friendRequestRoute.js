@@ -19,6 +19,23 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.get('/:id', async (req, res) => {
+    try {
+        const requestId = req.params.id;
+        const friendRequest = await FriendRequest.findById(requestId)
+            .populate('sender', 'nickname')
+            .populate('recipient', 'nickname');
+
+        if (friendRequest) {
+            res.status(200).send(friendRequest);
+        } else {
+            res.status(404).send("Friend request not found");
+        }
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+});
+
 router.get('/profile/:profileId', async (req, res) => {
     try {
         const profileId = req.params.profileId;
@@ -26,7 +43,8 @@ router.get('/profile/:profileId', async (req, res) => {
             $or: [
                 { sender: profileId },
                 { recipient: profileId }
-            ]
+            ],
+            status: 'pending'
         })
         .populate('sender', 'nickname')
         .populate('recipient', 'nickname');
@@ -69,6 +87,33 @@ router.post('/', async (req, res) => {
 
     } catch (error) {
         res.status(500).send(error.message);
+    }
+});
+
+router.put('/:id', async (req, res) => {
+    try {
+        const requestId = req.params.id;
+
+        const status = req.body.status; // Get the status from request body
+        // const { status } = req.body;
+
+        if (!['accepted', 'rejected'].includes(status)) {
+            return res.status(400).send("Invalid status");
+        }
+
+        const request = await FriendRequest.findById(requestId);
+
+        if (!request) {
+            return res.status(404).send("Friend request not found");
+        }
+
+        request.status = status;
+        await request.save();
+
+        res.status(200).send(request);
+
+    } catch (err) {
+        res.status(500).send(err.message);
     }
 });
 

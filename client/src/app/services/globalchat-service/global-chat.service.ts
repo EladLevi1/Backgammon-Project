@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import GlobalChat, { ChatMessage } from 'src/app/models/globalChat.model';
+import ChatMessage from 'src/app/models/chatMessage.model';
+import GlobalChat from 'src/app/models/globalChat.model';
 
 @Injectable({
   providedIn: 'root'

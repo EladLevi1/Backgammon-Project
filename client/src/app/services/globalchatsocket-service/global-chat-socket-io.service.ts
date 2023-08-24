@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, Observer } from 'rxjs';
-import { io } from 'socket.io-client';
+import { PublicSocketIoService } from '../publicsocket-service/public-socket-io.service';
 
 @Injectable({
   providedIn: 'root'
@@ -8,8 +8,8 @@ import { io } from 'socket.io-client';
 export class GlobalChatSocketIoService {
   private socket;
 
-  constructor() {
-    this.socket = io('http://localhost:8080');
+  constructor(private publicSocketIO: PublicSocketIoService) {
+    this.socket = this.publicSocketIO.getSocket();
   }
 
   public sendGlobalMessage(message: any): void {

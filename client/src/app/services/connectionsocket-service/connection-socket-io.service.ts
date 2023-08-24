@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { io } from 'socket.io-client';
-import { Observable, forkJoin } from 'rxjs';
+import { Observable, Observer, forkJoin, map } from 'rxjs';
 import Profile from 'src/app/models/profile.model';
 import { ProfileService } from '../profile-service/profile.service';
+import { PublicSocketIoService } from '../publicsocket-service/public-socket-io.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,8 +10,8 @@ import { ProfileService } from '../profile-service/profile.service';
 export class ConnectionSocketIoService {
   private socket;
 
-  constructor(private profileService: ProfileService) {
-    this.socket = io('http://localhost:8080');
+  constructor(private profileService: ProfileService, private publicSocketIO: PublicSocketIoService) {
+    this.socket = this.publicSocketIO.getSocket();
   }
 
   public profileConnected(profileId: string): void {
@@ -43,10 +43,9 @@ export class ConnectionSocketIoService {
     });
   }
 
-  public getOnlineProfiles(): Observable<Profile[]> {
-    return new Observable<Profile[]>(observer => {
+  public getOnlineProfiles(): Observable<any[]> {
+    return new Observable((observer: Observer<any[]>) => {
       this.socket.emit('getOnlineProfiles');
-      this.socket.off('onlineProfilesList');
       this.socket.on('onlineProfilesList', (profilesIdList: string[]) => {
         const profilesObservables = profilesIdList.map(id => this.profileService.getProfileById(id));
         forkJoin(profilesObservables).subscribe(profiles => {
@@ -54,5 +53,5 @@ export class ConnectionSocketIoService {
         });
       });
     });
-  }  
+  }
 }

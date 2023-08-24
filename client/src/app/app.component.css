@@ -41,6 +41,27 @@ body {
     max-height: 50px;
 }
 
+.backgammon-image {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.right-items {
+    display: flex;
+    align-items: center;
+}
+
+.inbox, .profile {
+    display: inline-block;
+}
+
+.inbox img{
+    max-width: 50px;
+    max-height: 50px;
+}
+
 .profile-dropdown {
     display: none;
     position: absolute;

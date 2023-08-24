@@ -14,12 +14,21 @@ export class FriendRequestService {
     return this.httpClient.get<friendRequest[]>(this.url);
   }
 
+  getFriendRequestById(id : string) {
+    return this.httpClient.get<friendRequest>(this.url + id);
+  }
+
   getFriendRequestsForProfile(profileId: string) {
-    return this.httpClient.get<friendRequest[]>(this.url + '/profile/' + profileId);
+    return this.httpClient.get<friendRequest[]>(this.url + 'profile/' + profileId);
   }
 
   sendFriendRequest(request: friendRequest) {
     return this.httpClient.post<friendRequest>(this.url, request);
+  }
+
+  updateFriendRequest(requestId: string, status: 'accepted' | 'rejected') {
+    const requestBody = { status: status };
+    return this.httpClient.put<friendRequest>(this.url + requestId, requestBody);
   }
 
   deleteFriendRequest(requestId: string) {

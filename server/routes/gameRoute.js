@@ -1,69 +1,83 @@
 const express = require('express');
-const Game = require('../models/Game');
 const router = express.Router();
+const mongoose = require('mongoose');
+const Game = require('../models/Game');
+const BackgammonGame = require('../logic/backgammonLogic');
 
-router.get('/', async (req, res) => {
+// Route to start a new game
+router.post('/create', async (req, res) => {
+    const { player1Id, player2Id } = req.body;
+
+    if (!player1Id || !player2Id) {
+        return res.status(400).send('Both player IDs are required');
+    }
+
+    const gameLogic = new BackgammonGame(player1Id, player2Id);
+    
+    const newGame = new Game({
+        players: {
+            white: player1Id,
+            black: player2Id
+        },
+        board: gameLogic.board.slice(1), // Removing the first element, as it was an extra slot in the game logic
+        currentPlayer: gameLogic.currentPlayer
+    });
+
     try {
-        const games = await Game.find()
-            .populate('player1', 'nickname')
-            .populate('player2', 'nickname');
-
-        if (games.length > 0) {
-            res.status(200).send(games);
-        } else {
-            res.status(404).send("No games found");
-        }
-
+        const savedGame = await newGame.save();
+        res.status(200).send(savedGame);
     } catch (err) {
         res.status(500).send(err.message);
     }
 });
 
-router.get('/:id', async (req, res) => {
+// Route to roll dice for a specific game
+router.post('/:gameId/rollDice', async (req, res) => {
     try {
-        const game = await Game.findOne({ _id: req.params.id })
-            .populate('player1', 'nickname')
-            .populate('player2', 'nickname');
-
-        if (game) {
-            res.status(200).send(game);
-        } else {
-            res.status(404).send("Game not found");
-        }
-
-    } catch (err) {
-        res.status(500).send(err.message);
-    }
-});
-
-router.post('/', async (req, res) => {
-    try {
-        const game = new Game({
-            player1: req.body.player1,
-            player2: req.body.player2,
-            boardState: req.body.boardState
-        });
-
-        await game.save();
-        res.status(200).send(game);
-
-    } catch (error) {
-        res.status(500).send(error.message);
-    }
-});
-
-router.put('/:id', async (req, res) => {
-    try {
-        const game = await Game.findOne({ _id: req.params.id });
-
+        const game = await Game.findById(req.params.gameId);
         if (!game) {
-            return res.status(404).send("Game not found");
+            return res.status(404).send('Game not found');
         }
 
-        game.player1 = req.body.player1;
-        game.player2 = req.body.player2;
-        game.state = req.body.state;
-        game.boardState = req.body.boardState;
+        const gameLogic = new BackgammonGame();
+        Object.assign(gameLogic, game._doc);
+
+        gameLogic.rollDice();
+        
+        game.diceRoll = gameLogic.dice;
+        game.currentPlayer = gameLogic.currentPlayer;
+
+        await game.save();
+        res.status(200).send({ diceRoll: game.diceRoll, currentPlayer: game.currentPlayer });
+
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+});
+
+// Route to make a move
+router.post('/:gameId/move', async (req, res) => {
+    const { startPoint, endPoint } = req.body;
+
+    if (startPoint === undefined || endPoint === undefined) {
+        return res.status(400).send('Both startPoint and endPoint are required');
+    }
+
+    try {
+        const game = await Game.findById(req.params.gameId);
+        if (!game) {
+            return res.status(404).send('Game not found');
+        }
+
+        const gameLogic = new BackgammonGame();
+        Object.assign(gameLogic, game._doc);
+        
+        gameLogic.moveChecker(startPoint, endPoint);
+
+        game.board = gameLogic.board.slice(1);
+        game.diceUsed = gameLogic.diceUsed;
+        game.currentPlayer = gameLogic.currentPlayer;
+        game.movesHistory.push({ startPoint, endPoint });
 
         await game.save();
         res.status(200).send(game);
@@ -73,19 +87,13 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-router.delete('/:id', async (req, res) => {
+router.get('/:gameId', async (req, res) => {
     try {
-        const deletedGame = await Game.deleteOne({ _id: req.params.id });
-
-        if (deletedGame.deletedCount > 0) {
-            const remainingGames = await Game.find()
-                .populate('player1', 'nickname')
-                .populate('player2', 'nickname');
-            res.status(200).send(remainingGames);
-
-        } else {
-            res.status(404).send("Game not found");
+        const game = await Game.findById(req.params.gameId);
+        if (!game) {
+            return res.status(404).send('Game not found');
         }
+        res.status(200).send(game);
     } catch (err) {
         res.status(500).send(err.message);
     }

@@ -1,54 +1,67 @@
 <div class="friends-page">
     <h1>Friends List</h1>
 
-    <!-- Section to add friends by nickname -->
     <div class="add-friend-section">
         <input [(ngModel)]="nicknameToAdd" placeholder="Enter Nickname to Add">
         <button (click)="addFriendByNickname()">Add Friend</button>
         <div *ngIf="error">{{ error }}</div>
     </div>
 
-    <!-- Section for displaying sent friend requests -->
-    <h2>Pending Requests</h2>
-    <div *ngIf="sentRequests.length == 0">You haven't sent any friend requests yet.</div>
-    <ul *ngFor="let request of sentRequests">
-        <li>{{ request.recipient.nickname }} (Pending)</li>
-    </ul>
-
-    <!-- Section for displaying received friend requests -->
-    <h2>Received Requests</h2>
-    <div *ngIf="receivedRequests.length == 0">No incoming friend requests.</div>
-    <ul *ngFor="let request of receivedRequests">
-        <li>{{ request.sender.nickname }} 
-            <button (click)="acceptRequest(request._id)">Accept</button> 
-            <button (click)="rejectRequest(request._id)">Reject</button>
-        </li>
-    </ul>
-
-    <!-- Displaying the friend list -->
-    <div *ngIf="friends.length == 0">
-        You have no friends 😔
+    <div class="tab-buttons">
+        <button (click)="currentTab = 'friends'" [class.active]="currentTab === 'friends'">Friends</button>
+        <button (click)="currentTab = 'sent'" [class.active]="currentTab === 'sent'">Pending Requests</button>
+        <button (click)="currentTab = 'received'" [class.active]="currentTab === 'received'">Received Requests</button>
     </div>
 
-    <table *ngIf="friends.length > 0">
-        <thead>
-            <tr>
-                <th>Image</th>
-                <th>Nickname</th>
-                <th>Score</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let friend of friends" class="friend-profile">
-                <td><img [src]="friend.image" alt="{{ friend.nickname }}" width="50" height="50"></td>
-                <td>{{ friend.nickname }}</td>
-                <td>score</td> <!-- Assuming the Profile model has a 'score' property -->
-                <td>
-                    <!-- You might have logic here to unfriend or perform other actions -->
-                    <button>Unfriend</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <div *ngIf="currentTab === 'friends'" class="friends">
+        <div *ngIf="friends.length == 0">
+            You have no friends 😔
+        </div>
+
+        <table *ngIf="friends.length > 0">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Nickname</th>
+                    <th>Score</th>
+                    <th>Action</th>
+                    <th>Unfriend</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let friend of friends" class="friend-profile">
+                    <td><img [src]="friend.image" alt="{{ friend.nickname }}" width="50" height="50"></td>
+                    <td>{{ friend.nickname }}</td>
+                    <td>score</td>
+                    <td>
+                        <button (click)="openChatWindow(friend._id)" class="chat-btn">Chat</button>
+                    </td>
+                    <td>
+                        <button class="unfriend-btn" (click)="unfriend(friend)">X</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Sent Requests Tab Content -->
+    <div *ngIf="currentTab === 'sent'" class="pending-requests">
+        <h2>Pending Requests</h2>
+        <div *ngIf="sentRequests.length == 0">You haven't sent any friend requests yet.</div>
+        <ul *ngFor="let request of sentRequests">
+            <li>{{ request.recipient.nickname }} (Pending)</li>
+        </ul>
+    </div>
+
+    <!-- Received Requests Tab Content -->
+    <div *ngIf="currentTab === 'received'" class="received-requests">
+        <h2>Received Requests</h2>
+        <div *ngIf="receivedRequests.length == 0">No incoming friend requests.</div>
+        <ul *ngFor="let request of receivedRequests">
+            <li>{{ request.sender.nickname }} 
+                <button class="accept-button" (click)="acceptRequest(request)">Accept</button> 
+                <button class="reject-button" (click)="rejectRequest(request)">Reject</button>
+            </li>
+        </ul>
+    </div>
 </div>

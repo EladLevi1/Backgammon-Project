@@ -47,7 +47,7 @@ router.get('/user/:userId', async (req, res) => {
     }
 });
 
-router.get('/:nickname', async (req, res) => {
+router.get('/nickname/:nickname', async (req, res) => {
     try {
         const profile = await Profile.findOne({ nickname: req.params.nickname });
         if (!profile) {
@@ -103,6 +103,44 @@ router.put('/:id', async (req, res) => {
         profile.image = req.body.image;
 
         await profile.save();
+        res.status(200).send(profile);
+
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+});
+
+router.post('/:id/addFriend', async (req, res) => {
+    try {
+        const profile = await Profile.findById(req.params.id);
+        if (!profile) {
+            return res.status(404).send("Profile not found");
+        }
+
+        const friendId = req.body.friendId;
+        if (!profile.friends.includes(friendId)) {
+            profile.friends.push(friendId);
+            await profile.save();
+        }
+
+        res.status(200).send(profile);
+
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+});
+
+router.delete('/:id/deleteFriend/:friendId', async (req, res) => {
+    try {
+        const profile = await Profile.findById(req.params.id);
+        if (!profile) {
+            return res.status(404).send("Profile not found");
+        }
+
+        const friendId = req.params.friendId;
+        profile.friends = profile.friends.filter(friend => friend.toString() !== friendId);
+        await profile.save();
+
         res.status(200).send(profile);
 
     } catch (err) {

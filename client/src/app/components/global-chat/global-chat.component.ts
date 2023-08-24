@@ -1,8 +1,8 @@
 import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { ChatMessage } from 'src/app/models/globalChat.model';
+import ChatMessage from 'src/app/models/chatMessage.model';
 import Profile from 'src/app/models/profile.model';
 import User from 'src/app/models/user.model';
-import { GlobalChatService } from 'src/app/services/global-service/global-chat.service';
+import { GlobalChatService } from 'src/app/services/globalchat-service/global-chat.service';
 import { GlobalChatSocketIoService } from 'src/app/services/globalchatsocket-service/global-chat-socket-io.service';
 
 @Component({

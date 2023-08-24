@@ -1,1 +1,84 @@
-<p>play-with-friend works!</p>
+<!-- <div class="play-with-friend-page">
+    <h1>Play With Friends</h1>
+
+    <ng-container *ngIf="onlineFriends.length == 0">
+        No friends online 😔
+    </ng-container>
+
+    <table *ngIf="onlineFriends.length > 0">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Nickname</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let friend of onlineFriends" class="online-friend">
+                <td><img [src]="friend.image" alt="{{ friend.nickname }}" width="50" height="50"></td>
+                <td>{{ friend.nickname }}</td>
+                <td>
+                    <button *ngIf="!inviteSent[friend._id]" (click)="inviteToPlay(friend)">Invite to Play</button>
+                    <span *ngIf="inviteSent[friend._id]">Invitation Sent</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div> -->
+
+
+<div class="play-with-friend-page">
+    <h1>Play With Friends</h1>
+
+    <div class="tab-buttons">
+        <button (click)="currentTab = 'friends'" [class.active]="currentTab === 'friends'">Online Friends</button>
+        <button (click)="currentTab = 'sent'" [class.active]="currentTab === 'sent'">Invitations Sent</button>
+        <button (click)="currentTab = 'received'" [class.active]="currentTab === 'received'">Invitations Received</button>
+    </div>
+
+    <div *ngIf="currentTab === 'friends'">
+        <ng-container *ngIf="onlineFriends.length == 0">
+            No friends online 😔
+        </ng-container>
+
+        <table *ngIf="onlineFriends.length > 0">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Nickname</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let friend of onlineFriends" class="online-friend">
+                    <td><img [src]="friend.image" alt="{{ friend.nickname }}" width="50" height="50"></td>
+                    <td>{{ friend.nickname }}</td>
+                    <td>
+                        <button *ngIf="!inviteSent[friend._id]" (click)="inviteToPlay(friend)">Invite to Play</button>
+                        <span *ngIf="inviteSent[friend._id]">Invitation Sent</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div *ngIf="currentTab === 'sent'">
+        <h2>Invitations Sent</h2>
+        <div *ngIf="gameInvitations.length == 0">You haven't sent any game invitations yet.</div>
+        <ul *ngFor="let invitation of gameInvitations">
+            <li>{{ invitation.recipient.nickname }} (Pending)</li>
+        </ul>
+    </div>
+
+    <div *ngIf="currentTab === 'received'">
+        <h2>Invitations Received</h2>
+        <div *ngIf="receivedInvitations.length == 0">You haven't received any game invitations yet.</div>   
+        <ul *ngIf="receivedInvitations.length > 0">
+            <li *ngFor="let invitation of receivedInvitations">
+                {{ invitation.sender.nickname }}
+                <!-- <button (click)="acceptInvitation(invitation)">Accept</button>
+                <button (click)="declineInvitation(invitation)">Decline</button> -->
+            </li>
+        </ul>
+    </div>
+</div>

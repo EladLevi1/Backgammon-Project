@@ -3,13 +3,12 @@ import { Injectable } from '@angular/core';
 import Profile from 'src/app/models/profile.model';
 import { UserService } from '../user-service/user.service';
 import { Observable, switchMap } from 'rxjs';
-import User from 'src/app/models/user.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProfileService {
-  private url = 'http://localhost:8080/backgammon/profiles/'
+  private url = 'http://localhost:8080/Backgammon/Profiles/'
 
   constructor(private httpClient : HttpClient, private userService: UserService) { }
 
@@ -21,8 +20,8 @@ export class ProfileService {
     return this.httpClient.get<Profile>(this.url + _id);
   }
 
-  getProfileByNickname(nickname: string): Observable<Profile> {
-    return this.httpClient.get<Profile>(this.url + nickname);
+  getProfileByNickname(nickname: string) {
+    return this.httpClient.get<Profile>(this.url + 'nickname/' + nickname);
   }
 
   getProfileByUserId(userId: string) {
@@ -45,10 +44,17 @@ export class ProfileService {
     return this.httpClient.put<Profile>(this.url + profile._id, profile);
   }
 
+  addFriend(profileId: string, friendId: string) {
+    return this.httpClient.post<Profile>(this.url + profileId + '/addFriend', { friendId: friendId });
+  }
+
+  deleteFriend(profileId: string, friendId: string) {
+    return this.httpClient.delete<Profile>(this.url + profileId + '/deleteFriend/' + friendId);
+  }
+
   getProfileByToken(): Observable<Profile> {
     return this.userService.getUserByToken().pipe(
       switchMap(user => this.getProfileByUserId(user._id))
     );
   }
-  
 }

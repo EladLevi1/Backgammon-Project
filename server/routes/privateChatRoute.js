@@ -2,34 +2,55 @@ const express = require('express');
 const PrivateChat = require('../models/PrivateChat');
 const router = express.Router();
 
-router.get('/:user1/:user2', async (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
-        const chat = await PrivateChat.findOne({
-            $or: [
-                { user1: req.params.user1, user2: req.params.user2 },
-                { user1: req.params.user2, user2: req.params.user1 }
-            ]
-        }).populate('messages.sender', 'nickname');
+        const chatId = req.params.id;
+        const chat = await PrivateChat.findById(chatId)
+            .populate('profile1', 'nickname')
+            .populate('profile2', 'nickname')
+            .populate('messages.sender', 'nickname');
 
         if (chat) {
             res.status(200).send(chat);
         } else {
             res.status(404).send("Private chat not found");
         }
-
     } catch (err) {
         res.status(500).send(err.message);
     }
 });
 
-router.post('/:user1/:user2', async (req, res) => {
+router.get('/:profile1/:profile2', async (req, res) => {
     try {
-        const chat = await PrivateChat.findOne({
+        let chat = await PrivateChat.findOne({
             $or: [
-                { user1: req.params.user1, user2: req.params.user2 },
-                { user1: req.params.user2, user2: req.params.user1 }
+                { profile1: req.params.profile1, profile2: req.params.profile2 },
+                { profile1: req.params.profile2, profile2: req.params.profile1 }
             ]
-        });
+        }).populate('messages.sender', 'nickname');
+
+        if (!chat) {
+            chat = new PrivateChat({
+                profile1: req.params.profile1,
+                profile2: req.params.profile2,
+                messages: []
+            });
+            await chat.save();
+        }
+
+        res.status(200).send(chat);
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+});
+
+router.post('/:id', async (req, res) => {
+    try {
+        const chatId = req.params.id;
+        const chat = await PrivateChat.findById(chatId)
+            .populate('profile1', 'nickname')
+            .populate('profile2', 'nickname')
+            .populate('messages.sender', 'nickname');
 
         if (!chat) {
             return res.status(404).send("Private chat not found");
@@ -43,8 +64,7 @@ router.post('/:user1/:user2', async (req, res) => {
         chat.messages.push(newMessage);
 
         await chat.save();
-        res.status(200).send(chat);
-
+        res.status(200).send(newMessage);
     } catch (error) {
         res.status(500).send(error.message);
     }

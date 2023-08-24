@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 
 const privateChatSchema = new mongoose.Schema({
-    user1: {
+    profile1: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Profile'
     },
-    user2: {
+    profile2: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Profile'
     },

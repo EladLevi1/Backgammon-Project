@@ -1,0 +1,24 @@
+<div class="chat-container">
+
+  <div class="chat-header">
+    <div class="profile-details">
+      <span [ngClass]="{'online-indicator': isOnline, 'offline-indicator': !isOnline}"></span>
+      <h2>{{ hisProfile.nickname }}</h2>
+    </div>
+    <div [ngClass]="{'in-chat': isInChat, 'not-in-chat': !isInChat}">
+      {{ isInChat ? 'In the chat' : 'Not in the chat' }}
+    </div>
+  </div>
+
+  <div class="messages" #chatMessagesDiv>
+    <div *ngFor="let message of chatMessages" [ngClass]="{'my-message': message.sender._id === myProfile._id, 'other-message': message.sender._id === hisProfile._id}">
+      <span class="sender">{{ message.sender.nickname }}</span>
+      <div class="message-content">{{ message.content }}</div>
+    </div>
+  </div>
+
+  <div class="message-input">
+    <input [(ngModel)]="newMessage" placeholder="Type your message..." />
+    <button (click)="sendMessage()">Send</button>
+  </div>
+</div>
