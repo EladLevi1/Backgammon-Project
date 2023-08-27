@@ -25,9 +25,10 @@
                     <td>{{ profile.nickname }}</td>
                     <td>score</td>
                     <td>
-                        <!-- <button *ngIf="!user.isFriend">Add Friend</button> -->
-                        <button>Add Friend</button>
-                    </td>
+                        <button [disabled]="isFriend(profile)">
+                            {{ isFriend(profile) ? 'Already Friends' : 'Add Friend' }}
+                        </button>
+                    </td>      
                 </tr>
             </tbody>
         </table>

@@ -34,7 +34,7 @@ router.get('/:id', async (req, res) => {
 
 router.get('/user/:userId', async (req, res) => {
     try {
-        const profile = await Profile.findOne({ user: req.params.userId }).populate('user', 'email');
+        const profile = await Profile.findOne({ user: req.params.userId }).populate('user', 'email').populate('friends', '_id');
 
         if (profile) {
             res.status(200).send(profile);

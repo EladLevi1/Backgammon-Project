@@ -5,8 +5,8 @@ const router = express.Router();
 router.get('/', async (req, res) => {
     try {
         const friendRequests = await FriendRequest.find()
-            .populate('sender', 'nickname')
-            .populate('recipient', 'nickname');
+            .populate('sender')
+            .populate('recipient');
 
         if (friendRequests.length > 0) {
             res.status(200).send(friendRequests);
@@ -23,8 +23,8 @@ router.get('/:id', async (req, res) => {
     try {
         const requestId = req.params.id;
         const friendRequest = await FriendRequest.findById(requestId)
-            .populate('sender', 'nickname')
-            .populate('recipient', 'nickname');
+            .populate('sender')
+            .populate('recipient');
 
         if (friendRequest) {
             res.status(200).send(friendRequest);
@@ -46,8 +46,8 @@ router.get('/profile/:profileId', async (req, res) => {
             ],
             status: 'pending'
         })
-        .populate('sender', 'nickname')
-        .populate('recipient', 'nickname');
+        .populate('sender')
+        .populate('recipient');
 
         if (friendRequests.length > 0) {
             res.status(200).send(friendRequests);
@@ -123,8 +123,8 @@ router.delete('/:id', async (req, res) => {
 
         if (deletedFriendRequest.deletedCount > 0) {
             const remainingFriendRequests = await FriendRequest.find()
-                .populate('sender', 'nickname')
-                .populate('recipient', 'nickname');
+                .populate('sender')
+                .populate('recipient');
             res.status(200).send(remainingFriendRequests);
 
         } else {
