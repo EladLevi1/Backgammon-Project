@@ -15,20 +15,20 @@
                 <tr>
                     <th>Image</th>
                     <th>Nickname</th>
-                    <th>Score</th>
-                    <th>Action</th>
+                    <!-- <th>Score</th>
+                    <th>Action</th> -->
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let profile of onlineProfiles" class="online-user">
                     <td><img [src]="profile.image" alt="{{ profile.nickname }}" width="50" height="50"></td>
                     <td>{{ profile.nickname }}</td>
-                    <td>score</td>
+                    <!-- <td>score</td>
                     <td>
-                        <button [disabled]="isFriend(profile)">
+                        <button>
                             {{ isFriend(profile) ? 'Already Friends' : 'Add Friend' }}
                         </button>
-                    </td>      
+                    </td> -->
                 </tr>
             </tbody>
         </table>

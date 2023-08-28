@@ -12,6 +12,7 @@ import { LogRegGuard } from './guards/logreg.guard';
 import { OnlineUsersComponent } from './components/online-users/online-users.component';
 import { PrivateChatComponent } from './components/private-chat/private-chat.component';
 import { PlayWithFriendComponent } from './components/play-with-friend/play-with-friend.component';
+import { GameComponent } from './components/game/game.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, canActivate: [AuthGuard] },
@@ -23,7 +24,8 @@ const routes: Routes = [
   { path: 'howtoplay', component: HowToPlayComponent, canActivate: [AuthGuard] }, 
   { path: 'onlineplayers', component: OnlineUsersComponent, canActivate: [AuthGuard] },
   { path: 'privatechat/:id', component: PrivateChatComponent, canActivate: [AuthGuard] },
-  { path: 'playfriend', component: PlayWithFriendComponent, canActivate: [AuthGuard] }
+  { path: 'playfriend', component: PlayWithFriendComponent, canActivate: [AuthGuard] },
+  { path: 'game', component: GameComponent, canActivate: [AuthGuard] },
 ];
 
 @NgModule({

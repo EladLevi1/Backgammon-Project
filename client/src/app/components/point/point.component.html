@@ -1,0 +1,4 @@
+<div class="triangle" [ngClass]="{'invert': invertDirection}" *ngIf="pieces.length > 0">
+    <app-piece *ngFor="let piece of pieces" [color]="piece"></app-piece>
+  </div>
+  

@@ -17,6 +17,9 @@ import { AboutComponent } from './components/about/about.component';
 import { HowToPlayComponent } from './components/how-to-play/how-to-play.component';
 import { GlobalChatComponent } from './components/global-chat/global-chat.component';
 import { PrivateChatComponent } from './components/private-chat/private-chat.component';
+import { BoardComponent } from './components/board/board.component';
+import { PointComponent } from './components/point/point.component';
+import { PieceComponent } from './components/piece/piece.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +37,9 @@ import { PrivateChatComponent } from './components/private-chat/private-chat.com
     HowToPlayComponent,
     GlobalChatComponent,
     PrivateChatComponent,
+    BoardComponent,
+    PointComponent,
+    PieceComponent,
   ],
   imports: [
     BrowserModule,

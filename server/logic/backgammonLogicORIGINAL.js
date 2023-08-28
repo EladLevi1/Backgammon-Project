@@ -12,8 +12,8 @@ class BackgammonGame {
         this.movesMade = 0;
         this.isGameOver = false;
         this.gameHistory = [];
-        this.jacobyRuleActive = false;
-        this.score = { white: 0, black: 0 };
+        this.jacobyRuleActive = false; // For the Jacoby rule
+        this.score = { white: 0, black: 0 }; // Add score property
     }
 
     setupBoard() {
@@ -56,8 +56,9 @@ class BackgammonGame {
             throw new Error("Doubling cube is already at its maximum value.");
         }
         this.doublingCube *= 2;
+        // When the doubling cube is used, the Jacoby rule becomes active
         this.jacobyRuleActive = true;
-        this.nextPlayer();
+        this.nextPlayer(); // Temporary switch to the other player for them to accept or decline the double
     }
 
     respondToDouble(accept) {
@@ -66,9 +67,10 @@ class BackgammonGame {
         }
         if (!accept) {
             this.isGameOver = true;
-            this.winner = this.currentPlayer === 'white' ? 'black' : 'white';
+            this.winner = this.currentPlayer === 'white' ? 'black' : 'white'; // The other player wins
             return;
         }
+        // If the double is accepted, the game continues
         this.nextPlayer();
     }
 
@@ -79,14 +81,17 @@ class BackgammonGame {
     }
 
     moveChecker(startPoint, endPoint) {
+        // Check if the game is over
         if (this.isGameOver) {
             throw new Error("You can't move pieces after the game ends.");
         }
     
+        // Check if the startPoint and endPoint are valid board positions
         if (startPoint < 1 || startPoint > 24 || endPoint < 1 || endPoint > 24) {
             throw new Error("Invalid start or end point.");
         }
     
+        // Ensure the startPoint has pieces of the current player's color
         if (this.board[startPoint].pieces === 0 || this.board[startPoint].color !== this.currentPlayer) {
             throw new Error("No valid checker to move from the starting point.");
         }
@@ -95,22 +100,27 @@ class BackgammonGame {
         const diceValue = direction * (endPoint - startPoint);
         const diceIndex = this.dice.indexOf(diceValue);
     
+        // Ensure the move corresponds to a dice value and the dice value hasn't been used yet
         if (diceIndex === -1 || this.diceUsed[diceIndex]) {
             throw new Error("Invalid move based on dice rolls.");
         }
     
+        // Check for valid movement logic
         if (!this.isValidMove(startPoint, endPoint, diceValue)) {
             throw new Error("Invalid move.");
         }
     
+        // Move logic: If there's only 1 opponent piece at the endPoint, send it to the bar
         if (this.board[endPoint].color !== this.currentPlayer && this.board[endPoint].pieces === 1) {
             this.bar[this.board[endPoint].color]++;
             this.board[endPoint].pieces = 0;
         }
     
-        this.updateBoard(startPoint, this.board[startPoint].color, -1);
-        this.updateBoard(endPoint, this.currentPlayer, 1);
+        // Update board's state for startPoint and endPoint
+        this.updateBoard(startPoint, this.board[startPoint].color, -1); // remove piece from startPoint
+        this.updateBoard(endPoint, this.currentPlayer, 1); // add piece to endPoint
     
+        // If all pieces are moved to the correct quadrant, move to bear off
         if (this.canBearOff(this.currentPlayer)) {
             if (this.currentPlayer === 'white' && endPoint <= 6) {
                 this.bearOff.white++;
@@ -121,12 +131,15 @@ class BackgammonGame {
             }
         }
     
+        // Mark the dice value as used
         this.diceUsed[diceIndex] = true;
     
+        // If all dice have been used, switch to the other player
         if (this.diceUsed.every(Boolean)) {
             this.switchPlayer();
         }
     
+        // Save the complete state after the move
         this.gameHistory.push({
             board: JSON.parse(JSON.stringify(this.board)),
             bar: { ...this.bar },
@@ -221,7 +234,7 @@ class BackgammonGame {
         if (Math.abs(endPoint - startPoint) !== diceValue) return false;
 
         if (this.bar[this.currentPlayer] > 0) {
-            return false;
+            return false; // Pieces on the bar need to be moved first
         }
 
         if (!this.board[startPoint] || this.board[startPoint].pieces === 0 || this.board[startPoint].color !== this.currentPlayer) {

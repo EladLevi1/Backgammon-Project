@@ -1,0 +1,21 @@
+.triangle {
+  width: 0;
+  height: 0;
+  border-left: 35px solid transparent;
+  border-right: 35px solid transparent;
+  border-bottom: 70px solid #eee;
+  margin: 1px;
+
+  &.invert {
+    border-bottom: none;
+    border-top: 70px solid #eee;
+  }
+
+  &:nth-child(odd) {
+    border-bottom-color: #aaa;
+
+    &.invert {
+      border-top-color: #aaa;
+    }
+  }
+}

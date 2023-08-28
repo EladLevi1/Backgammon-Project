@@ -34,9 +34,9 @@ export class OnlineUsersComponent {
     });
   }
 
-  isFriend(profile : Profile) : boolean{
-    console.log(this.onlineProfiles.length)
-    console.log(this.profile.friends.some(p => p._id === profile._id))
-    return this.profile.friends.some(p => p._id === profile._id);
-  }
+  // isFriend(profile : Profile) : boolean{
+  //   console.log(this.onlineProfiles.length)
+  //   console.log(this.profile.friends.some(p => p._id === profile._id))
+  //   return this.profile.friends.some(p => p._id === profile._id);
+  // }
 }
