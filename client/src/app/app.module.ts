@@ -20,6 +20,9 @@ import { PrivateChatComponent } from './components/private-chat/private-chat.com
 import { BoardComponent } from './components/board/board.component';
 import { PointComponent } from './components/point/point.component';
 import { PieceComponent } from './components/piece/piece.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar'
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NotificationsComponent } from './components/notifications/notifications.component';
 
 @NgModule({
   declarations: [
@@ -40,12 +43,15 @@ import { PieceComponent } from './components/piece/piece.component';
     BoardComponent,
     PointComponent,
     PieceComponent,
+    NotificationsComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    MatSnackBarModule,
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

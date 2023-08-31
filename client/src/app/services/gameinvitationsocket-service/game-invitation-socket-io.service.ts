@@ -18,7 +18,7 @@ export class GameInvitationSocketIoService {
   }
 
   onGameInvitationReceived() {
-    return new Observable<GameInvitation>((observer)=>{
+    return new Observable<any>((observer)=>{
       this.socket.on('recievedGameInvitation', (invitation) => {
         observer.next(invitation);
       });

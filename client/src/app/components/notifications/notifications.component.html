@@ -1,0 +1,23 @@
+<div class="notifications-page">
+    <h1>Notifications</h1>
+
+    <div class="bulk-actions">
+        <button (click)="markAllAsRead()" *ngIf="notifications.length > 0">Mark All as Read</button>
+        <button (click)="deleteAllNotifications()" *ngIf="notifications.length > 0">Delete All Notifications</button>
+    </div>
+
+    <ng-container *ngIf="notifications.length == 0">
+        No notifications received 😔
+    </ng-container>
+
+    <ul *ngIf="notifications.length > 0">
+        <li *ngFor="let notification of notifications" [class.read]="notification.status === 'read'">
+            <small class="notification-date">{{ notification.timestamp | date: 'medium' }}</small> <!-- Displaying the date -->
+            <span class="notification-content">{{ notification.content }}</span>
+            <div class="actions">
+                <button *ngIf="notification.status === 'unread'" (click)="markNotificationAsRead(notification)">Mark as Read</button>
+                <button (click)="deleteNotification(notification)">Delete</button>
+            </div>
+        </li>
+    </ul>
+</div>

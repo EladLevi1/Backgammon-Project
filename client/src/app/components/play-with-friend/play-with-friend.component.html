@@ -35,8 +35,8 @@
 
     <div *ngIf="currentTab === 'sent'">
         <h2>Invitations Sent</h2>
-        <div *ngIf="gameInvitations.length == 0">You haven't sent any game invitations yet.</div>
-        <ul *ngFor="let invitation of gameInvitations">
+        <div *ngIf="sentInvitations.length == 0">You haven't sent any game invitations yet.</div>
+        <ul *ngFor="let invitation of sentInvitations">
             <li>{{ invitation.recipient.nickname }} (Pending)</li>
         </ul>
     </div>
@@ -47,8 +47,8 @@
         <ul *ngIf="receivedInvitations.length > 0">
             <li *ngFor="let invitation of receivedInvitations">
                 {{ invitation.sender.nickname }}
-                <!-- <button (click)="acceptInvitation(invitation)">Accept</button>
-                <button (click)="declineInvitation(invitation)">Decline</button> -->
+                <button (click)="acceptInvitation(invitation)">Accept</button>
+                <button (click)="rejectInvitation(invitation)">Reject</button>
             </li>
         </ul>
     </div>

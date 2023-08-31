@@ -30,4 +30,8 @@ export class GameInvitationService {
   getGameInvitationsForProfile(profileId: string) {
     return this.httpClient.get<GameInvitation[]>(this.url + 'profile/' + profileId);
   }
+
+  deleteGameInvitation(requestId: string) {
+    return this.httpClient.delete<GameInvitation[]>(this.url + requestId);
+  }
 }

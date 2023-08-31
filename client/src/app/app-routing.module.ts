@@ -13,6 +13,7 @@ import { OnlineUsersComponent } from './components/online-users/online-users.com
 import { PrivateChatComponent } from './components/private-chat/private-chat.component';
 import { PlayWithFriendComponent } from './components/play-with-friend/play-with-friend.component';
 import { GameComponent } from './components/game/game.component';
+import { NotificationsComponent } from './components/notifications/notifications.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, canActivate: [AuthGuard] },
@@ -26,6 +27,7 @@ const routes: Routes = [
   { path: 'privatechat/:id', component: PrivateChatComponent, canActivate: [AuthGuard] },
   { path: 'playfriend', component: PlayWithFriendComponent, canActivate: [AuthGuard] },
   { path: 'game', component: GameComponent, canActivate: [AuthGuard] },
+  { path: 'notifications', component: NotificationsComponent, canActivate: [AuthGuard] }
 ];
 
 @NgModule({

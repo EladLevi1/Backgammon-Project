@@ -1,12 +1,16 @@
 const mongoose = require('mongoose');
 
 const notificationSchema = new mongoose.Schema({
-    userId: {
+    profile: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'Profile'
     },
-    content: String,
-    type: String,
+    content: {
+        type: String,
+        required: true,
+        minlength: 20,
+        maxlength: 100
+    },
     status: {
         type: String,
         enum: ['read', 'unread'],

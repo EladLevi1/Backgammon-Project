@@ -45,8 +45,8 @@ router.get('/profile/:profileId', async (req, res) => {
             ],
             status: 'pending'
         })
-        .populate('sender', 'nickname')
-        .populate('recipient', 'nickname');
+        .populate('sender', 'nickname _id')
+        .populate('recipient', 'nickname _id');
 
         if (gameInvitations.length > 0) {
             res.status(200).send(gameInvitations);

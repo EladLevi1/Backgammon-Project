@@ -46,8 +46,8 @@ router.get('/profile/:profileId', async (req, res) => {
             ],
             status: 'pending'
         })
-        .populate('sender')
-        .populate('recipient');
+        .populate('sender', '_id nickname image')
+        .populate('recipient', '_id nickname image');
 
         if (friendRequests.length > 0) {
             res.status(200).send(friendRequests);

@@ -4,7 +4,7 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
     try {
-        const profiles = await Profile.find().populate('user', 'email');
+        const profiles = await Profile.find();
 
         if (profiles.length > 0) {
             res.status(200).send(profiles);
@@ -19,7 +19,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     try {
-        const profile = await Profile.findById(req.params.id).populate('user', 'email');
+        const profile = await Profile.findById(req.params.id);
 
         if (profile) {
             res.status(200).send(profile);
@@ -34,7 +34,7 @@ router.get('/:id', async (req, res) => {
 
 router.get('/user/:userId', async (req, res) => {
     try {
-        const profile = await Profile.findOne({ user: req.params.userId }).populate('user', 'email').populate('friends', '_id');
+        const profile = await Profile.findOne({ user: req.params.userId }).populate('friends', '_id');
 
         if (profile) {
             res.status(200).send(profile);

@@ -5,6 +5,8 @@ import { ProfileService } from 'src/app/services/profile-service/profile.service
 import { FriendRequestService } from 'src/app/services/friendrequest-service/friend-request.service';
 import { FriendsSocketIoService } from 'src/app/services/friendssocket-service/friends-socket-io.service';
 import { PrivateChatService } from 'src/app/services/privatechat-service/private-chat.service';
+import { NotificationService } from 'src/app/services/notification-service/notification.service';
+import Notification from 'src/app/models/notification.model';
 
 @Component({
   selector: 'app-friends',
@@ -23,7 +25,7 @@ export class FriendsComponent {
 
 
   constructor(private profileService: ProfileService, private friendRequestService: FriendRequestService, private friendSocketIO: FriendsSocketIoService,
-    private privateChatService: PrivateChatService) {}
+    private privateChatService: PrivateChatService, private notificationService: NotificationService) {}
 
   ngOnInit() {
     this.profileService.getProfileByToken().subscribe((p) => {
@@ -59,6 +61,9 @@ export class FriendsComponent {
     this.friendSocketIO.onFriendRequestReceived().subscribe((data) => {
       this.friendRequestService.getFriendRequestById(data._id).subscribe((request) => {
         this.receivedRequests.push(request);
+      },
+      (error) => {
+        console.log(error.error);
       })
     },
     (error) => {
@@ -130,6 +135,17 @@ export class FriendsComponent {
             this.error = "Friend request sent successfully.";
 
             this.friendSocketIO.sendFriendRequest(res);
+
+            let notification = new Notification();
+            notification.content = `A new friend request sent from ${this.profile.nickname}`;
+            notification.profile = profile;
+            this.notificationService.sendNotification(notification).subscribe(() => {
+              console.log('here')
+            },
+            (error) => {
+              console.log(error.error);
+            });
+
 
             this.friendRequestService.getFriendRequestById(res._id).subscribe((req) => {
               this.sentRequests.push(req);

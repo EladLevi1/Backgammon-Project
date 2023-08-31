@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 
 const scoreSchema = new mongoose.Schema({
-    userId: {
+    profile: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'Profile'
     },
     gamesPlayed: {
         type: Number,
