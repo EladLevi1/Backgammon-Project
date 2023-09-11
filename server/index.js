@@ -89,6 +89,18 @@ ioServer.on('connection', (socket) => {
         ioServer.to(chatId).emit('receivePrivateMessage', message);
     });
 
+    socket.on('sendNotification', ({profileId, notification}) =>{
+        ioServer.to(profileId).emit('recievedNotification', notification);
+    });
+
+    socket.on('markNotification', ({profileId, notification}) =>{
+        ioServer.to(profileId).emit('notificationMarked', notification);
+    });
+
+    socket.on('deleteNotification', ({profileId, notification}) =>{
+        ioServer.to(profileId).emit('notificationDeleted', notification);
+    });
+
     socket.on('sendGameInvitation', (invitation) => {
         ioServer.to(invitation.recipient).emit('recievedGameInvitation', invitation);
     });

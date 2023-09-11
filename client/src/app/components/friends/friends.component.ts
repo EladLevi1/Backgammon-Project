@@ -7,6 +7,8 @@ import { FriendsSocketIoService } from 'src/app/services/friendssocket-service/f
 import { PrivateChatService } from 'src/app/services/privatechat-service/private-chat.service';
 import { NotificationService } from 'src/app/services/notification-service/notification.service';
 import Notification from 'src/app/models/notification.model';
+import { NotificationSocketIoService } from 'src/app/services/notificationsocket-service/notification-socket-io.service';
+import { MatSnackBarService } from 'src/app/services/matSnackBar-service/mat-snack-bar.service';
 
 @Component({
   selector: 'app-friends',
@@ -25,7 +27,8 @@ export class FriendsComponent {
 
 
   constructor(private profileService: ProfileService, private friendRequestService: FriendRequestService, private friendSocketIO: FriendsSocketIoService,
-    private privateChatService: PrivateChatService, private notificationService: NotificationService) {}
+    private privateChatService: PrivateChatService, private notificationService: NotificationService,
+    private notificationSocketIO : NotificationSocketIoService, private matSnackBarService : MatSnackBarService) {}
 
   ngOnInit() {
     this.profileService.getProfileByToken().subscribe((p) => {
@@ -97,7 +100,6 @@ export class FriendsComponent {
     });
 
     this.friendSocketIO.onFriendRemoved().subscribe((profileId) => {
-      console.log(profileId)
       this.friends = this.friends.filter(f => f._id !== profileId);
     },
     (error) => {
@@ -139,8 +141,9 @@ export class FriendsComponent {
             let notification = new Notification();
             notification.content = `A new friend request sent from ${this.profile.nickname}`;
             notification.profile = profile;
-            this.notificationService.sendNotification(notification).subscribe(() => {
-              console.log('here')
+            this.notificationService.sendNotification(notification).subscribe((n) => {
+
+              this.notificationSocketIO.sendNotification(profile._id, n);
             },
             (error) => {
               console.log(error.error);

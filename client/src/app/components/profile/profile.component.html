@@ -1,0 +1,41 @@
+<div class="profile-page">
+
+    <div class="profile-header">
+        <img [src]="hisProfile.image" alt="{{ hisProfile.nickname }}" class="profile-pic">
+        <h1>{{ hisProfile.nickname }}</h1>
+    </div>
+
+    <!-- <div class="profile-score">
+        <p><strong>Games Played:</strong> games played</p>
+        <p><strong>Wins:</strong> wins </p>
+        <p><strong>Losses:</strong> losses </p>
+    </div> -->
+
+    <div class="profile-score">
+        <div class="score-item">
+            <h3>Games</h3>
+            <p>xxx</p>
+        </div>
+        <div class="score-item">
+            <h3>Wins</h3>
+            <p>xxx</p>
+        </div>
+        <div class="score-item">
+            <h3>Losses</h3>
+            <p>xxx</p>
+        </div>
+    </div>    
+
+    <div class="friends-section">
+        <h2>Friends</h2>
+        <div *ngIf="profileFriends.length == 0">
+            {{hisProfile.nickname}} has no friends 😔
+        </div>
+        <div class="friends-list" *ngIf="profileFriends.length > 0">
+            <div *ngFor="let friend of profileFriends" class="friend-card" [routerLink]="['/profile', friend._id]">
+                <img [src]="friend.image" alt="{{ friend.nickname }}" width="50" height="50">
+                <p>{{ friend.nickname }}</p>
+            </div>            
+        </div>
+    </div>
+</div>

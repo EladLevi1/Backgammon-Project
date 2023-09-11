@@ -8,7 +8,7 @@ export class MatSnackBarService {
 
   constructor(private snackBar: MatSnackBar) {}
 
-  showNotification(message: string, action: string = 'Close') {
+  recieveNotification(message: string, action: string = 'Close') {
     this.snackBar.open(message, action, {
       duration: 5000,
       verticalPosition: 'top',

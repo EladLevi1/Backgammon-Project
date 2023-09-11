@@ -23,6 +23,8 @@ import { PieceComponent } from './components/piece/piece.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NotificationsComponent } from './components/notifications/notifications.component';
+import { LeaderboardComponent } from './components/leaderboard/leaderboard.component';
+import { ProfileComponent } from './components/profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -44,6 +46,8 @@ import { NotificationsComponent } from './components/notifications/notifications
     PointComponent,
     PieceComponent,
     NotificationsComponent,
+    LeaderboardComponent,
+    ProfileComponent,
   ],
   imports: [
     BrowserModule,

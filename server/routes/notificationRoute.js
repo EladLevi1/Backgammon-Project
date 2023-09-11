@@ -111,7 +111,7 @@ router.delete('/deleteAll/:profileId', async (req, res) => {
         const result = await Notification.deleteMany({ profile: profileId });
 
         if (result.deletedCount > 0) {
-            res.status(200).send("All notifications deleted successfully.");
+            res.status(200).json({ message: "All notifications deleted successfully."});
         } else {
             res.status(404).send("No notifications found for the specified profile.");
         }

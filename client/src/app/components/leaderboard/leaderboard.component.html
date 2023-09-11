@@ -1,24 +1,26 @@
-<div class="online-users-page">
-    <h1>Online Players</h1>
+<div class="leaderboard-page">
+    <h1>Leaderboard</h1>
 
     <div *ngIf="loading" class="loader"></div>
 
     <ng-container *ngIf="!loading">
-        <div *ngIf="onlineProfiles.length == 0">
-            No players online 😔
+        <div *ngIf="profiles.length == 0">
+            No players in the leaderboard 😔
         </div>
 
-        <table *ngIf="onlineProfiles.length > 0">
+        <table *ngIf="profiles.length > 0">
             <thead>
                 <tr>
                     <th>Image</th>
                     <th>Nickname</th>
+                    <th>Score</th>
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let profile of onlineProfiles" class="online-user" [routerLink]="['/profile', profile._id]">
+                <tr *ngFor="let profile of profiles" class="leaderboard-user" [routerLink]="['/profile', profile._id]">
                     <td><img [src]="profile.image" alt="{{ profile.nickname }}" width="50" height="50"></td>
                     <td>{{ profile.nickname }}</td>
+                    <td>score</td>
                 </tr>
             </tbody>
         </table>

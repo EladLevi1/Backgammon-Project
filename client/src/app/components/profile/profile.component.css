@@ -1,0 +1,99 @@
+.profile-page {
+    width: 70%;
+    background-color: #333;
+    border-radius: 10px;
+    margin: 20px auto;
+    padding: 20px;
+    color: wheat;
+}
+
+.profile-header {
+    text-align: center;
+    position: relative;
+}
+
+.profile-pic {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(255,215,0,0.7);
+    margin-bottom: 10px;
+}
+
+h1 {
+    font-size: 36px;
+    text-shadow: 3px 3px #000;
+    font-weight: bold;
+    border-bottom: 2px solid #FFD700;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.profile-score {
+    display: flex;
+    justify-content: space-between;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 20px;
+    align-items: center;
+    text-align: center;
+    position: relative;
+}
+
+.score-item h3 {
+    font-size: 24px;
+    margin-bottom: 10px;
+    text-decoration: underline;
+    text-shadow: 2px 2px #000;
+}
+
+.score-item p {
+    font-size: 20px;
+    margin-top: 0;
+    font-weight: bold;
+}
+
+.friends-section {
+    border-top: 2px solid #FFD700;
+    padding-top: 20px;
+    margin-top: 20px;
+}
+
+.friends-section h2 {
+    text-align: center;
+}
+
+.friends-section div {
+    text-align: center;
+}
+
+.friends-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 10px;
+}
+
+.friend-card {
+    flex: 0 0 calc(33.33% - 10px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255,215,0,0.1);
+    padding: 10px;
+    border-radius: 10px;
+    transition: background-color 0.3s;
+}
+
+.friend-card:hover {
+    background-color: rgba(255,215,0,0.2);
+    cursor: pointer;
+}
+
+.friend-card img {
+    border-radius: 50%;
+    box-shadow: 0 0 5px rgba(255,215,0,0.6);
+    margin-bottom: 5px;
+    margin-top: 20px;
+}

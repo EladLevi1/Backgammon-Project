@@ -11,32 +11,19 @@ import { ProfileService } from 'src/app/services/profile-service/profile.service
 export class OnlineUsersComponent {
   onlineProfiles: Profile[] = [];
   loading: boolean = true;
-  profile: Profile = new Profile();
 
   constructor(private connectionSocketIO: ConnectionSocketIoService, private profileService: ProfileService){}
   
   ngOnInit() {
-    this.profileService.getProfileByToken().subscribe((p) => {
-      this.profile = p;
-
-      this.connectionSocketIO.onProfileOnline().subscribe((profileOnline : any) => {
-        if (profileOnline._id !== this.profile._id){
-          this.onlineProfiles.push(profileOnline);
-        }
-      });
-      this.connectionSocketIO.onProfileOffline().subscribe((profileOffline : any) => {
-        this.onlineProfiles = this.onlineProfiles.filter(p => p._id !== profileOffline._id);
-      });
-      this.connectionSocketIO.getOnlineProfiles().subscribe(profilesList => {
-        this.onlineProfiles = profilesList.filter(p => p._id !== this.profile._id);
-        this.loading = false;
-      }); 
+    this.connectionSocketIO.getOnlineProfiles().subscribe(profilesList => {
+      this.onlineProfiles = profilesList;
+      this.loading = false;
+    }); 
+    this.connectionSocketIO.onProfileOnline().subscribe((profileOnline : any) => {
+      this.onlineProfiles.push(profileOnline);
+    });
+    this.connectionSocketIO.onProfileOffline().subscribe((profileOffline : any) => {
+      this.onlineProfiles = this.onlineProfiles.filter(p => p._id !== profileOffline._id);
     });
   }
-
-  // isFriend(profile : Profile) : boolean{
-  //   console.log(this.onlineProfiles.length)
-  //   console.log(this.profile.friends.some(p => p._id === profile._id))
-  //   return this.profile.friends.some(p => p._id === profile._id);
-  // }
 }

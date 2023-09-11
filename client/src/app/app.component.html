@@ -8,16 +8,16 @@
         </div>
         <div class="right-items">
             <div class="inbox">
-                <a (click)="notifications = !notifications">
-                    <img src="/assets/images/unread.jpg" alt="notifications"/>
+                <a class="nav-link" routerLink="/notifications">
+                    <img [src]="(allRead) ? '/assets/images/read.jpg' : '/assets/images/unread.jpg'" alt="notifications"/>
                 </a>
             </div>
             <div class="profile">
                 <div class="profile-menu">
-                    <img [src]="profile.image" alt="profile" (click)="toggleProfileMenu()">
-                    <div class="profile-dropdown" *ngIf="showProfileMenu">
+                    <img [src]="profile.image" alt="profile" [routerLink]="['/profile', profile._id]">
+                    <div class="profile-dropdown">
                         <a routerLink="edit-settings">Edit Settings</a>
-                        <a><button (click)="logout()">Logout</button></a>
+                        <a (click)="logout()">Logout</a>
                     </div>
                 </div>
             </div>

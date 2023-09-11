@@ -53,6 +53,7 @@ td {
 
 .friend-profile:hover {
     background-color: rgba(255,215,0,0.4);
+    cursor: pointer;
 }
 
 .friend-profile td {
