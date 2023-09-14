@@ -28,10 +28,10 @@ const routes: Routes = [
   { path: 'onlineplayers', component: OnlineUsersComponent, canActivate: [AuthGuard] },
   { path: 'privatechat/:id', component: PrivateChatComponent, canActivate: [AuthGuard] },
   { path: 'playfriend', component: PlayWithFriendComponent, canActivate: [AuthGuard] },
-  { path: 'game', component: GameComponent, canActivate: [AuthGuard] },
   { path: 'notifications', component: NotificationsComponent, canActivate: [AuthGuard] },
   { path: 'leaderboard', component: LeaderboardComponent, canActivate: [AuthGuard] },
-  { path: 'profile/:id', component: ProfileComponent, canActivate: [AuthGuard] }
+  { path: 'profile/:id', component: ProfileComponent, canActivate: [AuthGuard] },
+  { path: 'game', component: GameComponent, canActivate: [AuthGuard] },
 ];
 
 @NgModule({

@@ -1,6 +1,7 @@
 class BackgammonGame {
-    constructor(player1Id, player2Id) {
+    constructor(player1Id, player2Id, gameId) {
         this.board = Array(25).fill(null).map(() => ({ color: null, pieces: 0 }));
+        this.gameId = gameId;
         this.setupBoard();
         this.bar = { white: 0, black: 0 };
         this.bearOff = { white: 0, black: 0 };

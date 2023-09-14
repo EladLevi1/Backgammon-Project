@@ -40,6 +40,7 @@ app.use('/Backgammon/PrivateChat', privateChatRoute);
 app.use('/Backgammon/GameInvitation', gameInvitationRoute);
 
 const activeProfiles = new Set();
+const activeGames = new Map();
 
 ioServer.on('connection', (socket) => {
     socket.on('profileConnected', (profileId) => {
@@ -111,6 +112,19 @@ ioServer.on('connection', (socket) => {
 
     socket.on('rejectGameInvitation', (invitation) => {
         ioServer.to(invitation.sender).emit('gameInvitationRejected', invitation);
+    });
+
+    socket.on('createGame', (gameId) => {
+        
+    });
+
+    socket.on('move', (gameState) => {
+        ioServer.emit('onMove', gameState)
+    });
+
+    socket.on('joinGame', (gameId) => {
+        socket.join(gameId);
+        ioServer.to(gameId).emit('joinedGame', gameId);
     });
 
     socket.on('disconnect', () => {
