@@ -1,312 +1,312 @@
-class BackgammonGame {
-    constructor(player1Id, player2Id, gameId) {
-        this.board = Array(25).fill(null).map(() => ({ color: null, pieces: 0 }));
-        this.gameId = gameId;
-        this.setupBoard();
-        this.bar = { white: 0, black: 0 };
-        this.bearOff = { white: 0, black: 0 };
-        this.players = { white: player1Id, black: player2Id };
-        this.currentPlayer = Math.random() < 0.5 ? 'white' : 'black';
-        this.dice = [];
-        this.isDoubled = false;
-        this.doublingCube = 1;
-        this.movesMade = 0;
-        this.isGameOver = false;
-        this.gameHistory = [];
-        this.jacobyRuleActive = false;
-        this.score = { white: 0, black: 0 };
+class Backgammon {
+    firstCheckersPosition(board){
+        board[0] = {color: "white", amount: 2};
+        board[12] = {color: "white", amount: 5};
+        board[17] = {color: "white", amount: 3};
+        board[20] = {color: "white", amount: 5};
+
+        board[25] = {color: "black", amount: 2};
+        board[13] = {color: "black", amount: 5};
+        board[8] = {color: "black", amount: 3};
+        board[5] = {color: "black", amount: 5};
+
+        board[6] = {color: "white", amount: 0}
+
+        board[19] = {color: "black", amount: 0};
+
+        return board;
     }
 
-    setupBoard() {
-        const positions = [
-            { color: 'white', point: 24, pieces: 2 },
-            { color: 'white', point: 13, pieces: 5 },
-            { color: 'white', point: 8, pieces: 3 },
-            { color: 'white', point: 6, pieces: 5 },
-            { color: 'black', point: 1, pieces: 2 },
-            { color: 'black', point: 12, pieces: 5 },
-            { color: 'black', point: 17, pieces: 3 },
-            { color: 'black', point: 19, pieces: 5 }
-        ];
-        for (let pos of positions) {
-            this.board[pos.point].color = pos.color;
-            this.board[pos.point].pieces = pos.pieces;
-        }
+    whoIsStarting() {
+        let color = ["black", "white"];
+        let randomIndex = Math.floor(Math.random() * color.length);
+        let randomColor = color[randomIndex];
+
+        return randomColor;
     }
 
-    updateBoard(point, color, pieces) {
-        this.board[point].color = color;
-        this.board[point].pieces += pieces;
-    }
-
-    rollDice() {
-        if (this.isGameOver) {
-            throw new Error("You cannot roll the dice. The game is over.");
-        }
-        
-        this.dice = [Math.floor(Math.random() * 6) + 1, Math.floor(Math.random() * 6) + 1];
-        this.isDoubled = this.dice[0] === this.dice[1];
-        this.movesMade = this.isDoubled ? 4 : 2;
-    }
-
-    double() {
-        if (this.isGameOver) {
-            throw new Error("Doubling isn't allowed after the game ends.");
-        }
-        if (this.doublingCube >= 64) {
-            throw new Error("Doubling cube is already at its maximum value.");
-        }
-        this.doublingCube *= 2;
-        this.jacobyRuleActive = true;
-        this.nextPlayer();
-    }
-
-    respondToDouble(accept) {
-        if (this.isGameOver) {
-            throw new Error("Game is over! Cannot respond to double.");
-        }
-        if (!accept) {
-            this.isGameOver = true;
-            this.winner = this.currentPlayer === 'white' ? 'black' : 'white';
-            return;
-        }
-        this.nextPlayer();
-    }
-
-    hitChecker(endPoint) {
-        this.bar[this.board[endPoint].color]++;
-        this.board[endPoint].color = this.currentPlayer;
-        this.board[endPoint].pieces = 0;
-    }
-
-    moveChecker(startPoint, endPoint) {
-        if (this.isGameOver) {
-            throw new Error("You can't move pieces after the game ends.");
-        }
-    
-        if (startPoint < 1 || startPoint > 24 || endPoint < 1 || endPoint > 24) {
-            throw new Error("Invalid start or end point.");
-        }
-    
-        if (this.board[startPoint].pieces === 0 || this.board[startPoint].color !== this.currentPlayer) {
-            throw new Error("No valid checker to move from the starting point.");
-        }
-    
-        const direction = this.currentPlayer === 'white' ? -1 : 1;
-        const diceValue = direction * (endPoint - startPoint);
-        const diceIndex = this.dice.indexOf(diceValue);
-    
-        if (diceIndex === -1 || this.diceUsed[diceIndex]) {
-            throw new Error("Invalid move based on dice rolls.");
-        }
-    
-        if (!this.isValidMove(startPoint, endPoint, diceValue)) {
-            throw new Error("Invalid move.");
-        }
-    
-        if (this.board[endPoint].color !== this.currentPlayer && this.board[endPoint].pieces === 1) {
-            this.bar[this.board[endPoint].color]++;
-            this.board[endPoint].pieces = 0;
-        }
-    
-        this.updateBoard(startPoint, this.board[startPoint].color, -1);
-        this.updateBoard(endPoint, this.currentPlayer, 1);
-    
-        if (this.canBearOff(this.currentPlayer)) {
-            if (this.currentPlayer === 'white' && endPoint <= 6) {
-                this.bearOff.white++;
-                this.board[endPoint].pieces--;
-            } else if (this.currentPlayer === 'black' && endPoint >= 19) {
-                this.bearOff.black++;
-                this.board[endPoint].pieces--;
-            }
-        }
-    
-        this.diceUsed[diceIndex] = true;
-    
-        if (this.diceUsed.every(Boolean)) {
-            this.switchPlayer();
-        }
-    
-        this.gameHistory.push({
-            board: JSON.parse(JSON.stringify(this.board)),
-            bar: { ...this.bar },
-            bearOff: { ...this.bearOff },
-            currentPlayer: this.currentPlayer,
-            dice: [...this.dice],
-            doublingCube: this.doublingCube
-        });
-    }    
-
-    canMoveAnyPiece() {
-        for (let diceValue of this.dice) {
-            for (let i = 1; i <= 24; i++) {
-                if (this.board[i].color === this.currentPlayer && this.isValidMove(i, i + (this.currentPlayer === 'white' ? -diceValue : diceValue), diceValue)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    bearOffChecker(startPoint, diceValue) {
-        if (!this.canBearOff()) {
-            throw new Error("Cannot bear off yet!");
-        }
-
-        this.board[startPoint].pieces--;
-
-        if (this.board[startPoint].pieces === 0) {
-            this.board[startPoint].color = null;
-        }
-
-        this.bearOff[this.currentPlayer]++;
-        this.movesMade--;
-
-        if (this.movesMade === 0 || !this.canMoveAnyPiece()) {
-            this.checkForGameOver();
-            this.nextPlayer();
-        }
-    }
-    
-    undoLastMove() {
-        if (!this.gameHistory.length) {
-            throw new Error("No moves to undo.");
-        }
-        const lastMove = this.gameHistory.pop();
-        this.board[lastMove.startPoint].pieces++;
-        this.board[lastMove.endPoint].pieces--;
-        this.movesMade++;
-        if (this.board[lastMove.endPoint].pieces === 0) {
-            this.board[lastMove.endPoint].color = null;
-        }
-    }
-
-    isGammon() {
-        for (let i = 1; i <= 24; i++) {
-            if (this.board[i].color === (this.currentPlayer === 'white' ? 'black' : 'white') && this.board[i].pieces > 0) {
-                return false;
-            }
-        }
-        return this.bar[this.currentPlayer === 'white' ? 'black' : 'white'] === 0;
-    }
-
-    isBackgammon() {
-        return this.isGammon() && (this.bar[this.currentPlayer === 'white' ? 'black' : 'white'] > 0 || 
-                                   this.board[this.currentPlayer === 'white' ? 1 : 24].pieces > 0);
-    }
-
-    nextPlayer() {
-        this.currentPlayer = this.currentPlayer === 'white' ? 'black' : 'white';
-    }
-
-    getValidMoves(point) {
-        if (this.isGameOver) {
-            throw new Error("The game is over.");
-        }
-        if (point < 1 || point > 24 || !this.board[point] || this.board[point].pieces === 0 || this.board[point].color !== this.currentPlayer) {
-            throw new Error(`Invalid point (${point}) selected.`);
-        }
-        const validMoves = [];
-        for (let diceValue of this.dice) {
-            const endPoint = point + (this.currentPlayer === 'white' ? -diceValue : diceValue);
-            if (this.isValidMove(point, endPoint, diceValue)) {
-                validMoves.push(endPoint);
-            }
-        }
-        return validMoves;
-    }
-
-    isValidMove(startPoint, endPoint, diceValue) {
-        if (startPoint < 1 || startPoint > 24 || endPoint < 1 || endPoint > 24) return false;
-        if (Math.abs(endPoint - startPoint) !== diceValue) return false;
-
-        if (this.bar[this.currentPlayer] > 0) {
+    makeMove(gameState, from, to) {
+        if (gameState.board[from].color !== gameState.currentPlayer) {
             return false;
         }
 
-        if (!this.board[startPoint] || this.board[startPoint].pieces === 0 || this.board[startPoint].color !== this.currentPlayer) {
+        if (this.checkIfGameIsEnded(gameState)){
             return false;
         }
 
-        if (this.board[endPoint].color !== this.currentPlayer && this.board[endPoint].pieces > 1) {
-            return false;
+        if (this.checkIfCheckersOnBar(gameState)){
+            this.checkerFromBarToBoard(gameState, from, to);
+            return true;
         }
 
-        if (this.canBearOff()) {
-            if (this.currentPlayer === 'white' && endPoint === 0) {
-                return startPoint - diceValue <= 6;
-            }
-            if (this.currentPlayer === 'black' && endPoint === 25) {
-                return startPoint + diceValue >= 19;
-            }
+        if (this.checkIfCanBearOff(gameState)){
+            this.bearOff(gameState, from);
+            return true;
+        }
+
+        if (!this.useDiceForMove(gameState, from, to)) {
+            return false;
+        }
+    
+        this.regularMove(gameState, from, to);
+
+        this.checkEndOfTurn(gameState);
+
+        return true;
+    }
+
+    regularMove(gameState, from, to) {
+        if (!this.checkIfCanMove(gameState, from, to)) {
+            return false;
+        }
+        let color = gameState.currentPlayer;
+
+        gameState.board[from].amount -= 1;
+        if (gameState.board[from].amount === 0) {
+            gameState.board[from].color = null;
+        }
+
+        if (gameState.board[to].color === null || gameState.board[to].color === color) {
+            gameState.board[to].amount++;
+            gameState.board[to].color = color;
+        } else if (gameState.board[to].amount === 1) {
+            this.eatChecker(gameState, to);
+        } else {
+            return false;
         }
         return true;
     }
 
-    enterFromBar(diceValue) {
-        if (this.isGameOver) {
-            throw new Error("Game is over! Cannot enter pieces from the bar.");
-        }
-
-        const entryPoint = this.currentPlayer === 'white' ? 25 - diceValue : diceValue;
-
-        if (this.bar[this.currentPlayer] === 0 || !this.canEnterFromBar(diceValue)) {
-            throw new Error("Cannot enter from the bar!");
-        }
-
-        if (this.board[entryPoint].color && this.board[entryPoint].color !== this.currentPlayer) {
-            this.bar[this.board[entryPoint].color]++;
-            this.board[entryPoint] = { color: this.currentPlayer, pieces: 1 };
-        } else {
-            this.board[entryPoint].color = this.currentPlayer;
-            this.board[entryPoint].pieces++;
-        }
-        this.bar[this.currentPlayer]--;
+    checkIfCanMove(gameState, from, to) {
+        let color = gameState.currentPlayer;
+        return (color === 'white' && to > from) || (color === 'black' && to < from);
     }
 
-    canEnterFromBar(diceValue) {
-        const entryPoint = this.currentPlayer === 'white' ? 25 - diceValue : diceValue;
-        return (this.board[entryPoint].color === this.currentPlayer || this.board[entryPoint].pieces <= 1);
+    changePlayer(gameState) {
+        gameState.currentPlayer = gameState.currentPlayer === 'white' ? 'black' : 'white';
     }
+    
+    checkIfCanBearOff(gameState){
 
-    canBearOff() {
-        let totalInHomeBoard = 0;
-        const start = this.currentPlayer === 'white' ? 19 : 1;
-        const end = this.currentPlayer === 'white' ? 24 : 6;
-        for (let i = start; i <= end; i++) {
-            if (this.board[i].color === this.currentPlayer) {
-                totalInHomeBoard += this.board[i].pieces;
+        let color = gameState.currentPlayer;
+        
+        if (color === 'white') {
+            for (let i = 0; i <= 19; i++) {
+                if (gameState.board[i].color === 'white') {
+                    return false;
+                }
             }
         }
-        const furthestPoint = this.currentPlayer === 'white' ? 6 : 19;
-        return this.board[furthestPoint].color !== this.currentPlayer && totalInHomeBoard === (15 - this.bearOff[this.currentPlayer]);
+
+        if (color === 'black') {
+            for (let i = 6; i <= 25; i++) {
+                if (gameState.board[i].color === 'black') {
+                    return false;
+                }
+            }
+        }
+
+        return true; // can bear off checkers
     }
 
-    checkForGameOver() {
-        if (this.bearOff.white === 15 || this.bearOff.black === 15) {
-            this.isGameOver = true;
-            if (!this.jacobyRuleActive || this.doublingCube > 1) {
-                if (this.isGammon()) {
-                    console.log("Gammon!");
-                } else if (this.isBackgammon()) {
-                    console.log("Backgammon!");
+    bearOff(gameState, from){
+        if (this.checkIfCheckersOnBar(gameState)){
+            return false;
+        }
+        if (this.checkIfThereAreCheckersOnTriangle(gameState, from) && this.checkIfCanBearOff(gameState)){
+            let color = gameState.currentPlayer;
+            gameState.board[from].amount -= 1;
+            if (gameState.board[from].amount === 0){
+                gameState.board[from].color = null;
+            }
+            if (color === 'white') {
+                gameState.bearOff.white += 1;
+            }
+            if (color === 'black') {
+                gameState.bearOff.black += 1;
+            }
+            return true; // beared off checker
+        }
+        return false; // did not beared checker
+    }
+
+    checkIfThereAreCheckersOnTriangle(gameState, position){
+        if (gameState.board[position].amount > 0){
+            return true;
+        }
+        return false; // no checkers
+    }
+
+    checkIfCheckersOnBar(gameState){
+        let color = gameState.currentPlayer;
+
+        if (color === 'white') {
+            if (gameState.board[6].amount > 0) {
+                return true;
+            }
+        }
+        if (color === 'black'){
+            if (gameState.board[19].amount > 0){
+                return true;
+            }
+        }
+
+        return false; // no checkers on bar
+    }
+
+    checkerFromBarToBoard(gameState, from, to){
+        if (this.checkIfEnemyBaseIsFull(gameState)){
+            return false;
+        }
+        if (this.checkIfThereAreCheckersOnTriangle(gameState, to)){
+            let color = gameState.currentPlayer;
+
+            if (color === 'white'){
+                if (gameState.board[to].color === color || gameState.board[to].color === null){
+                    gameState.bar.white -= 1;
+                    gameState.board[from].amount -= 1;
+                    gameState.board[to].color === color;
+                    gameState.board[to].amount += 1;
+                }
+                if (gameState.board[to].color === 'black' && gameState.board[to].amount <= 1){
+                    gameState.bar.white -= 1;
+                    gameState.board[from].amount -= 1;
+                    this.eatChecker(gameState, to);
+                }
+            }
+
+            if (color === 'black'){
+                if (gameState.board[to].color === color || gameState.board[to].color === null){
+                    gameState.bar.black -= 1;
+                    gameState.board[from].amount -= 1;
+                    gameState.board[to].color === color;
+                    gameState.board[to].amount += 1;
+                }
+                if (gameState.board[to].color === 'white' && gameState.board[to].amount <= 1){
+                    gameState.bar.black -= 1;
+                    gameState.board[from].amount -= 1;
+                    this.eatChecker(gameState, to);
                 }
             }
         }
     }
 
-    endGame() {
-        let multiplier = 1;
-        if (this.isGammon()) {
-            multiplier = 2;
-            console.log("Gammon!");
-        } else if (this.isBackgammon()) {
-            multiplier = 3;
-            console.log("Backgammon!");
+    eatChecker(gameState, position){
+        let color = gameState.currentPlayer;
+
+        if (color === 'white'){
+            gameState.board[position].color === 'white';
+            gameState.bar.black += 1;
+            gameState.board[19].amount += 1;
         }
-        this.score[this.currentPlayer] += this.doublingCube * multiplier;
+        if (color === 'black'){
+            gameState.board[position].color === 'black';
+            gameState.bar.white += 1;
+            gameState.board[6].amount += 1;
+        }
+    }
+
+    useDiceForMove(gameState, from, to) {
+        let distance = Math.abs(to - from);
+        let diceIndex = gameState.diceRoll.indexOf(distance);
+        
+        if (diceIndex !== -1 && !gameState.diceUsed[diceIndex]) {
+            gameState.diceUsed[diceIndex] = true;
+            return true;
+        }
+        return false; // Invalid move based on dice values
+    }
+    
+    checkIfCanRollDice(gameState){
+        if (this.checkIfCheckersOnBar(gameState) && this.checkIfEnemyBaseIsFull(gameState)){
+            return false;
+        }
+        if (this.checkIfGameIsEnded(gameState)){
+            return false;
+        }
+        return true; // can roll dice
+    }
+
+    rollDice(gameState){
+        if (this.checkIfCanRollDice(gameState)){
+            const dice1 = Math.floor(Math.random() * 6) + 1;
+            const dice2 = Math.floor(Math.random() * 6) + 1;
+
+            if (dice1 === dice2) {
+                gameState.diceRoll = [dice1, dice1, dice1, dice1];
+                gameState.diceUsed = [false, false, false, false];
+            } else {
+                gameState.diceRoll = [dice1, dice2];
+                gameState.diceUsed = [false, false];
+            }
+
+            return true; // dice rolled
+        }
+        this.changePlayer(gameState);
+        return false; // dice didnt roll
+    }
+
+    checkIfEnemyBaseIsFull(gameState){
+        let color = gameState.currentPlayer;
+
+        if (color === 'white'){
+            for (let i = 0; i < 6; i++){
+                if (gameState.board[i].color === 'white' || gameState.board[i].amount <= 1){
+                    return false;
+                }
+            }
+        }
+        if (color === 'black'){
+            for (let i = 20; i < 26; i++){
+                if (gameState.board[i].color === 'black' || gameState.board[i].amount <= 1){
+                    return false;
+                }
+            }
+        }
+
+        return true; //enemy base is full
+    }
+
+    checkEndOfTurn(gameState) {
+        if (gameState.diceUsed.every(val => val) || !this.checkIfAnyValidMoves(gameState)) {
+            this.changePlayer(gameState);
+            return true;
+        }
+        return false;
+    }
+
+    checkIfAnyValidMoves(gameState) {
+        let color = gameState.currentPlayer;
+    
+        // Iterate through each position on the board.
+        for (let i = 0; i < 26; i++) {
+            // If the checker on this position belongs to the current player
+            if (gameState.board[i].color === color && gameState.board[i].amount > 0) {
+                for (let diceValue of gameState.diceRoll) {
+                    // Calculate potential move based on dice value and player color
+                    let potentialPosition = (color === 'white') ? i + diceValue : i - diceValue;
+    
+                    // Ensure the move is within the board boundaries
+                    if (potentialPosition >= 0 && potentialPosition <= 25) {
+                        // Check if the potential move is valid
+                        if (!gameState.diceUsed[gameState.diceRoll.indexOf(diceValue)] &&
+                            this.checkIfCanMove(gameState, i, potentialPosition)) {
+                            return true; // Found a valid move
+                        }
+                    }
+                }
+            }
+        }
+    
+        return false; // No valid moves found
+    }
+
+    checkIfGameIsEnded(gameState){
+        if (gameState.bearOff.white === 15 || gameState.bearOff.black === 15){
+            return true;
+        }
+        return false; //game is not ended
     }
 }
 
-module.exports = BackgammonGame;
+module.exports = Backgammon;

@@ -10,6 +10,13 @@ import { NotificationService } from './services/notification-service/notificatio
 import { NotificationSocketIoService } from './services/notificationsocket-service/notification-socket-io.service';
 import Notification from './models/notification.model';
 import { MatSnackBarService } from './services/matSnackBar-service/mat-snack-bar.service';
+import { GameInvitationSocketIoService } from './services/gameinvitationsocket-service/game-invitation-socket-io.service';
+import { JoinGameDialogComponent } from './components/join-game-dialog/join-game-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { GameService } from './services/game-service/game.service';
+import Game from './models/game.model';
+import { GameStateService } from './services/gamestate-service/game-state.service';
+import GameState from './models/gameState.model';
 
 @Component({
   selector: 'app-root',
@@ -28,7 +35,9 @@ export class AppComponent {
   
   constructor(private userService: UserService, private connectionSocketIO: ConnectionSocketIoService,
     private profileService: ProfileService, private router: Router, private notificationService : NotificationService,
-    private notificationSocketIO: NotificationSocketIoService, private matSnackBarService : MatSnackBarService){}
+    private notificationSocketIO: NotificationSocketIoService, private matSnackBarService : MatSnackBarService,
+    private gameInvitationSocketIO : GameInvitationSocketIoService, private dialog : MatDialog,
+    private gameService: GameService, private gameStateService: GameStateService){}
 
   ngOnInit() {
     const token = this.userService.getToken();
@@ -86,7 +95,43 @@ export class AppComponent {
       }, 
       (error) => {
         console.log(error);
-      });      
+      }); 
+      
+      this.gameInvitationSocketIO.onGameInvitationAccepted().subscribe((inv) => {
+        const dialogRef = this.dialog.open(JoinGameDialogComponent, {
+          data: {
+            nickname: inv.sender.nickname
+          }
+        });
+        
+        dialogRef.afterClosed().subscribe(result => {
+          if (result) {
+            let game = new Game();
+            game.players.white = this.profile;
+            this.profileService.getProfileById(inv.recipient._id).subscribe((p) => {
+              game.players.black = p;
+
+              this.gameService.createGame(game).subscribe((game) => {
+                let gameState = new GameState();
+                gameState.game = game;
+                gameState.currentPlayer = 'white';
+                
+                this.gameStateService.createGameState(gameState).subscribe(() => {
+                  this.router.navigate(['/game', game._id]);
+                });
+              },
+              (error) => {
+                console.log(error.error)
+              })
+            })
+          } else {
+            console.log(false, result);
+          }
+        });
+      },
+      (error) => {
+        console.log(error.error);
+      })
     }
   }
 

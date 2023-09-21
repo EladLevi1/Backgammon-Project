@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import GameState from "src/app/models/gameState.model";
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,7 @@ export class CanvasService {
   spacing: number = 30;
   triangleBase : number = 0;
   triangleHeight : number = 0;
+  selectedTriangle: any = null;
 
   constructor() {
     this.ctx = this.canvas.getContext('2d')!;
@@ -24,7 +26,7 @@ export class CanvasService {
     })
   }
 
-  setUpBoard() {
+  setUpBoard(gameState: GameState) {
     const triangleBase = (this.canvas.width - 2 * this.spacing) / 13;
     const triangleHeight = (this.canvas.height - 2 * this.spacing) / 2;
 
@@ -40,33 +42,35 @@ export class CanvasService {
       return num % 2 === 0 ? '#B58863' : '#8B4513';
     }
 
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 13; i++) {
       const color = check(i);
-      
-      this.drawTriangle(i * triangleBase + this.spacing, this.spacing, triangleBase, triangleHeight, 'down', color);
-      this.drawTriangle(i * triangleBase + this.spacing, this.canvas.height - triangleHeight - this.spacing, triangleBase, triangleHeight, 'up', color);
-      this.drawTriangle((i + 7) * triangleBase + this.spacing, this.spacing, triangleBase, triangleHeight, 'down', color);
-      this.drawTriangle((i + 7) * triangleBase + this.spacing, this.canvas.height - triangleHeight - this.spacing, triangleBase, triangleHeight, 'up', color);
+
+      if (i !== 6){
+        this.drawTriangle(i * triangleBase + this.spacing, this.spacing, triangleBase, triangleHeight, 'down', color);
+        this.drawTriangle(i * triangleBase + this.spacing, this.spacing + triangleHeight, triangleBase, triangleHeight, 'up', color);
+
+      }
     }
 
-    // White checkers
-    this.drawCheckersOnTriangle(0, 'down', 'white', 2, triangleBase);
-    this.drawCheckersOnTriangle(12, 'down', 'white', 5, triangleBase);
-    this.drawCheckersOnTriangle(8, 'up', 'white', 3, triangleBase);
-    this.drawCheckersOnTriangle(5, 'up', 'white', 5, triangleBase);
+    console.log(gameState.board);
 
-    // Black checkers
-    this.drawCheckersOnTriangle(0, 'up', 'black', 2, triangleBase);
-    this.drawCheckersOnTriangle(12, 'up', 'black', 5, triangleBase);
-    this.drawCheckersOnTriangle(8, 'down', 'black', 3, triangleBase);
-    this.drawCheckersOnTriangle(5, 'down', 'black', 5, triangleBase);
+    for (let i = 0; i < 26; i++) {
+      const color = gameState.board[i].color!;
+      const amount = gameState.board[i].amount!;
+      if (i <= 12) {
+        this.drawCheckersOnTriangle(12 - i, 'down', color, amount, triangleBase);
+      } else {
+        this.drawCheckersOnTriangle(i - 13, 'up', color, amount, triangleBase);
+      }
+      console.log(i, color, amount);
+    }
   }
 
-  drawCheckersOnTriangle(triangleNum: number, direction: string, color: string, count: number, triangleBase: number) {
+  drawCheckersOnTriangle(triangleNum: number, direction: string, color: string, amount: number, triangleBase: number) {
     const checkerRadius = triangleBase * 0.2;
     const spacingBetweenCheckers = checkerRadius * 2.5;
 
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < amount; i++) {
       const x = (triangleNum + 0.5) * triangleBase + this.spacing;
       let y;
       if (direction === 'down') {
@@ -140,19 +144,6 @@ export class CanvasService {
     const rect = this.canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-
-    console.log(x, y);
-    // const stackIndex = this.coordsToStackIndex(x, y);
-    // if (stackIndex !== -1) {
-    //   this.stackClickSubject.next(stackIndex);
-    // }
-  }
-
-  coordsToTriangle(x : number, y : number) {
-    
-  }
-
-  selectChecker(){
 
   }
 }

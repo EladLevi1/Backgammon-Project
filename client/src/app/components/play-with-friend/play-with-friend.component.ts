@@ -7,6 +7,9 @@ import { ProfileService } from 'src/app/services/profile-service/profile.service
 import { GameInvitationService } from 'src/app/services/gameinvitation-service/game-invitation.service';
 import { FriendsSocketIoService } from 'src/app/services/friendssocket-service/friends-socket-io.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+import { JoinGameDialogComponent } from '../join-game-dialog/join-game-dialog.component';
+import { WaitingForOpponentComponent } from '../waiting-for-opponent/waiting-for-opponent.component';
 
 @Component({
   selector: 'app-play-with-friend',
@@ -24,7 +27,7 @@ export class PlayWithFriendComponent {
 
   constructor(private connectionSocketIO: ConnectionSocketIoService, private profileService: ProfileService,
               private gameInvitationSocketIO: GameInvitationSocketIoService, private gameInvitationService: GameInvitationService,
-              private friendsSocketIO: FriendsSocketIoService, private snackBar: MatSnackBar) {}
+              private friendsSocketIO: FriendsSocketIoService, private snackBar: MatSnackBar, private dialog : MatDialog) {}
 
   ngOnInit() {
     this.profileService.getProfileByToken().subscribe(profile => {
@@ -132,7 +135,23 @@ export class PlayWithFriendComponent {
   }
 
   acceptInvitation(invitation : GameInvitation){
-    
+    this.gameInvitationService.updateGameInvitation(invitation._id, 'accepted').subscribe((inv) => {
+      this.gameInvitationSocketIO.acceptGameInvitation(inv);
+
+      const dialogRef = this.dialog.open(WaitingForOpponentComponent, {
+        data: {
+          nickname: inv.sender.nickname
+        }
+      });
+      
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          // Logic for joining the game immediately
+        } else {
+          // Optional: Logic if the user decides not to join immediately
+        }
+      });
+    })
   }
 
   rejectInvitation(invitation : GameInvitation){

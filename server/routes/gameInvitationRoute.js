@@ -96,7 +96,9 @@ router.put('/:id', async (req, res) => {
             return res.status(400).send("Invalid status");
         }
 
-        const invitation = await GameInvitation.findById(invitationId);
+        const invitation = await GameInvitation.findById(invitationId)
+        .populate('sender', 'nickname _id')
+        .populate('recipient', 'nickname _id');
 
         if (!invitation) {
             return res.status(404).send("Game invitation not found");

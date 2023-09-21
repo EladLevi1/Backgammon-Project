@@ -22,6 +22,7 @@ app.use(cors());
 const userRoute = require('./routes/userRoute');
 const profileRoute = require('./routes/profileRoute');
 const gameRoute = require('./routes/gameRoute');
+const gameStateRoute = require('./routes/gameStateRoute');
 const gameChatRoute = require('./routes/gameChatRoute');
 const friendRequestRoute = require('./routes/friendRequestRoute');
 const notificationRoute = require('./routes/notificationRoute');
@@ -32,6 +33,7 @@ const gameInvitationRoute = require('./routes/gameInvitationRoute');
 app.use('/Backgammon/Users', userRoute);
 app.use('/Backgammon/Profiles', profileRoute);
 app.use('/Backgammon/Games', gameRoute);
+app.use('/Backgammon/GameState', gameStateRoute);
 app.use('/Backgammon/GameChat', gameChatRoute);
 app.use('/Backgammon/FriendRequests', friendRequestRoute);
 app.use('/Backgammon/Notifications', notificationRoute);
@@ -107,7 +109,7 @@ ioServer.on('connection', (socket) => {
     });
 
     socket.on('acceptGameInvitation', (invitation) => {
-        ioServer.to(invitation.sender).emit('gameInvitationAccepted', invitation);
+        ioServer.to(invitation.sender._id).emit('gameInvitationAccepted', invitation);
     });
 
     socket.on('rejectGameInvitation', (invitation) => {

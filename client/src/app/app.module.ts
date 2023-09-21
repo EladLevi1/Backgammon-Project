@@ -22,6 +22,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NotificationsComponent } from './components/notifications/notifications.component';
 import { LeaderboardComponent } from './components/leaderboard/leaderboard.component';
 import { ProfileComponent } from './components/profile/profile.component';
+import { JoinGameDialogComponent } from './components/join-game-dialog/join-game-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { WaitingForOpponentComponent } from './components/waiting-for-opponent/waiting-for-opponent.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +45,8 @@ import { ProfileComponent } from './components/profile/profile.component';
     NotificationsComponent,
     LeaderboardComponent,
     ProfileComponent,
+    JoinGameDialogComponent,
+    WaitingForOpponentComponent,
   ],
   imports: [
     BrowserModule,
@@ -49,7 +54,8 @@ import { ProfileComponent } from './components/profile/profile.component';
     FormsModule,
     HttpClientModule,
     MatSnackBarModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    MatDialogModule
   ],
   providers: [],
   bootstrap: [AppComponent]
